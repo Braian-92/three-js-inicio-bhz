@@ -53,10 +53,10 @@
            }
            enJuego = true
            jugador.ACELERAR = 0
-           jugador.angulo = PI
-           // jugador2.angulo = -PI
-           // jugador3.angulo = -PI / 2
-           // jugador4.angulo = PI
+           jugador.angulo  = PI
+           enemigo1.angulo = -PI
+           enemigo2.angulo = -PI / 2
+           enemigo3.angulo = PI
            // document.getElementById("info").style.visibility = "hidden"
       }
 
@@ -90,9 +90,13 @@
       // var objeto = new THREE.Mesh(geometry, material);
       // scene.add(objeto);
 
-      let jugador = Car();
+      let jugador  = Car();
+      let enemigo1 = Car()
+      let enemigo2 = Car()
+      let enemigo3 = Car()
+      scene.add(jugador, enemigo1, enemigo2, enemigo3)
       jugador.rotation.z = -PI/4
-      scene.add(jugador);
+      // scene.add(jugador);
       scene.add(pista())
 
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -142,23 +146,23 @@
 
               let carriles = [40, 40, -40]
               let velocidades = [1.5, 1.5, 3]
-              // let obstaculos = [jugador2, jugador3, jugador4]
-              // for (let i = 0; i < obstaculos.length; i++) {
-              //      let jugadorObstaculo = obstaculos[i]
-              //      jugadorObstaculo.angulo -= velocidades[i] * 2 * PI * tiempo_transcurrido * vueltasPorSegundo
-              //      let p = trayectoriaCircular(
-              //           x = 150,
-              //           y = 0,
-              //           r = 270 + carriles[i],
-              //           a = jugadorObstaculo.angulo
-              //      )
-              //      jugadorObstaculo.position.x = p.x
-              //      jugadorObstaculo.position.y = p.y
-              //      jugadorObstaculo.rotation.z = jugadorObstaculo.angulo - PI / 2
-              //      if (distancia3D(jugador.position, jugadorObstaculo.position) < 35) {
-              //           finalizar()
-              //      }
-              // }
+              let obstaculos = [enemigo1, enemigo2, enemigo3]
+              for (let i = 0; i < obstaculos.length; i++) {
+                   let jugadorObstaculo = obstaculos[i]
+                   jugadorObstaculo.angulo -= velocidades[i] * 2 * PI * tiempo_transcurrido * vueltasPorSegundo
+                   let p = trayectoriaCircular(
+                        150,
+                        0,
+                        270 + carriles[i],
+                        jugadorObstaculo.angulo
+                   )
+                   jugadorObstaculo.position.x = p.x
+                   jugadorObstaculo.position.y = p.y
+                   jugadorObstaculo.rotation.z = jugadorObstaculo.angulo - PI / 2
+                   // if (distancia3D(jugador.position, jugadorObstaculo.position) < 35) {
+                   //      finalizar()
+                   // }
+              }
          }
          // document.getElementById("Puntaje").innerHTML = int(jugador.angulo / (2 * PI))
          tiempoInicio = Date.now()
