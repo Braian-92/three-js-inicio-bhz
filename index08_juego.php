@@ -8,8 +8,8 @@
     <link rel="stylesheet" type="text/css" href="css/librerias/adminlte.min.css">
   </head>
   <body>
-  	<script src="https://cdn.jsdelivr.net/gh/Jeff-Aporta/lib-jeff-aporta@main/matematica.js"></script>
-  	<script src="https://cdn.jsdelivr.net/gh/Jeff-Aporta/lib-jeff-aporta@latest/ascii_teclas.js"></script>
+  	<script src="ascii_teclas.js"></script>
+  	<script src="matematica.js"></script>
   	<script src="js/librerias/jquery-3.5.1.min.js"></script>
   	<script src="js/librerias/bootstrap.bundle.min.js"></script>
   	<script src="js/librerias/adminlte.min.js"></script>
@@ -95,7 +95,7 @@
       let enemigo2 = Car()
       let enemigo3 = Car()
       scene.add(jugador, enemigo1, enemigo2, enemigo3)
-      jugador.rotation.z = -PI/4
+      // jugador.rotation.z = -PI/4
       // scene.add(jugador);
       scene.add(pista())
 
@@ -159,9 +159,9 @@
                    jugadorObstaculo.position.x = p.x
                    jugadorObstaculo.position.y = p.y
                    jugadorObstaculo.rotation.z = jugadorObstaculo.angulo - PI / 2
-                   // if (distancia3D(jugador.position, jugadorObstaculo.position) < 35) {
-                   //      finalizar()
-                   // }
+                   if (distancia3D(jugador.position, jugadorObstaculo.position) < 35) {
+                        finalizar()
+                   }
               }
          }
          // document.getElementById("Puntaje").innerHTML = int(jugador.angulo / (2 * PI))
