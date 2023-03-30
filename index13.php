@@ -45,20 +45,40 @@
               <div class="row m-0">
                 <div class="col-4">
                   <div class="form-group">
-                    <label>Eje X</label>
-                    <input id="elementoPropX" type="number" class="form-control form-control-sm" id="exampleInputEmail1" placeholder="">
+                    <label class="px-0 m-0 text-sm w-100 text-center">Eje X</label>
+                    <input id="elementoEjeX" type="number" class="form-control form-control-sm" placeholder="">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label>Eje Y</label>
-                    <input id="elementoPropY" type="number" class="form-control form-control-sm" id="exampleInputEmail1" placeholder="">
+                    <label class="px-0 m-0 text-sm w-100 text-center">Eje Y</label>
+                    <input id="elementoEjeY" type="number" class="form-control form-control-sm" placeholder="">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label>Eje Z</label>
-                    <input id="elementoPropZ" type="number" class="form-control form-control-sm" id="exampleInputEmail1" placeholder="">
+                    <label class="px-0 m-0 text-sm w-100 text-center">Eje Z</label>
+                    <input id="elementoEjeZ" type="number" class="form-control form-control-sm" placeholder="">
+                  </div>
+                </div>
+              </div>
+              <div class="row m-0">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label class="px-0 m-0 text-sm w-100 text-center">Rot X</label>
+                    <input id="elementoRotX" type="number" class="form-control form-control-sm" placeholder="">
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label class="px-0 m-0 text-sm w-100 text-center">Rot Y</label>
+                    <input id="elementoRotY" type="number" class="form-control form-control-sm" placeholder="">
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label class="px-0 m-0 text-sm w-100 text-center">Rot Z</label>
+                    <input id="elementoRotZ" type="number" class="form-control form-control-sm" placeholder="">
                   </div>
                 </div>
               </div>
@@ -75,6 +95,7 @@
     import { OrbitControls } from "./OrbitControls.js";
     //creating ESCENA
     const pantalla = document.querySelector('#pantalla');
+    let elementoSeleccionadoListado = null;
     var ESCENA = new THREE.Scene();
     ESCENA.name = 'ESCENA';
     ESCENA.background = new THREE.Color(0x2a3b4c);
@@ -165,9 +186,22 @@
 
     var animate = function () {
       requestAnimationFrame(animate);
+
+      CERO.rotation.x += 0.01;
+      CERO.rotation.y += 0.01;
+
       cube.position.x = centroX + Math.cos(Math.PI*tiempo) * radio;
       cube.position.y = centroY + Math.sin(Math.PI*tiempo) * radio;
       tiempo += 0.01;
+      if(elementoSeleccionadoListado != null){
+        $('#elementoEjeX').val(elementoSeleccionadoListado.position.x);
+        $('#elementoEjeY').val(elementoSeleccionadoListado.position.y);
+        $('#elementoEjeZ').val(elementoSeleccionadoListado.position.z);
+
+        $('#elementoRotX').val(elementoSeleccionadoListado.rotation.x);
+        $('#elementoRotY').val(elementoSeleccionadoListado.rotation.y);
+        $('#elementoRotZ').val(elementoSeleccionadoListado.rotation.z);
+      }
 
       renderer.render(ESCENA, CAMARA);
     };
@@ -198,12 +232,13 @@
       $('#listaElementosPantalla').html(listaElementosPantalla); 
     }
 
+    
+
     $(document).on('click', '.elementoListadoPantalla', function(e){
       const nombreElementoT = $(this).attr('nombreElemento');
-      let elementoSeleccionadoT = ESCENA.getObjectByName(nombreElementoT);
-      console.log(elementoSeleccionadoT);
+      elementoSeleccionadoListado = ESCENA.getObjectByName(nombreElementoT);
+      console.log(elementoSeleccionadoListado);
       $('#tituloPropiedadesElemento').text('Propiedades: ' + nombreElementoT);
-      $('#elementoPropZ')
     });
 
   </script>
