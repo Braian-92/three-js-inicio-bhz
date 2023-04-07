@@ -4,6 +4,7 @@ function Nave(pantallaT, escenaT, tecladoT, naveT, explosionT, disparoT) {
    this.escena = escenaT;
    this.teclado = tecladoT;
    this.nave = naveT;
+   this.elemento;
    this.xSize = 1;
    this.ySize = 1;
    this.zSize = 2;
@@ -110,11 +111,12 @@ Nave.prototype = {
       // this.x = pantalla.width / 2 - 18;  // 36 / 2
       // this.y = pantalla.height - 68;
       this.x = this.pantalla.width / 2;  // 36 / 2
-      this.y = this.pantalla.height;
+      this.y = this.pantalla.height / 2;
 
-      console.log('this', this);
+      // console.log('this', this);
 
+      this.nave.position.set(this.x, this.y, this.z);
       
-      // this.nave.position(this.x, this.y, 0);
+      // 
    }
 }

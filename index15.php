@@ -141,12 +141,15 @@
     const pantalla = document.querySelector('#pantalla');
     let elementoSeleccionadoListado = null;
     var ESCENA = new THREE.Scene();
-    var RENDERIZADO = new THREE.WebGLRenderer();
+    var RENDERIZADO = new THREE.WebGLRenderer({
+      antialias:true //! para suavizar las lineas del dibujado
+    });
     var CAMARA;
     var material = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
-      wireframe: true,
+      // wireframe: true,
     });
+
 
 
     const ELEMENTOS = [];
@@ -160,8 +163,8 @@
     let PERSONAJE;
     let ANIMACION;
     let PANTALLA = {
-      width  : 16,
-      height : 9
+      width  : 32,
+      height : 18
     };
 
     init();
@@ -225,7 +228,8 @@
         new THREE.BoxGeometry(),
         material
       );
-
+      
+      // NAVE.position(PANTALLA.width / 2, PANTALLA.height / 2, 0);
       var EXPLOSION = new THREE.Mesh(
         new THREE.BoxGeometry(),
         material

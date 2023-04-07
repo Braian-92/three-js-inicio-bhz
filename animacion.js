@@ -11,7 +11,9 @@ function Animacion(escenaT) {
 }
 Animacion.prototype = {
    nuevoElemento: function(sprite) {
+      // sprite.nave.position(sprite.x, sprite.y, sprite.z);
       sprite.escena.add(sprite.nave);
+      console.log(sprite.nave);
       this.sprite = sprite;
       sprite.animacion = this;
    },
