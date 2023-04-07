@@ -38,16 +38,13 @@
 		<script type="module">
 
 			import * as THREE from 'three';
-
-			// import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 			import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
 			let container;
 			let camera, scene, renderer;
 			const splineHelperObjects = [];
-			let splinePointsLength = 4;
+			
 			const positions = [];
 			const point = new THREE.Vector3();
 
@@ -122,13 +119,12 @@
 
 				transformControl.addEventListener( 'objectChange', function () {
 
-					// updateSplineOutline();
-
 				} );
 
 				document.addEventListener( 'pointerdown', onPointerDown );
 				document.addEventListener( 'pointerup', onPointerUp );
 				document.addEventListener( 'pointermove', onPointerMove );
+				// document.addEventListener( 'pointerdown', onPointerMove );
 				window.addEventListener( 'resize', onWindowResize );
 
 				load( [ new THREE.Vector3( 289.76843686945404, 452.51481137238443, 56.10018915737797 ),
@@ -167,7 +163,7 @@
 
 			function addPoint() {
 
-				splinePointsLength ++;
+				
 
 				positions.push( addSplineObject().position );
 
@@ -196,8 +192,6 @@
 					positions[ i ].copy( new_positions[ i ] );
 
 				}
-
-				// updateSplineOutline();
 
 			}
 

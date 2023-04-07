@@ -90,47 +90,140 @@
   </body>
   <script src="js/librerias/jquery-3.5.1.min.js"></script>
   <script src="js/librerias/bootstrap.bundle.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./threeJsMaster/build/three.module.js",
+        "three/addons/": "./threeJsMaster/examples/jsm/"
+      }
+    }
+  </script>
   <script type="module">
-    import * as THREE from "./three.module.js";
-    import { OrbitControls } from "./OrbitControls.js";
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { TransformControls } from 'three/addons/controls/TransformControls.js';
+
+    var  bodyRect = document.body.getBoundingClientRect(),
+    elemRect = document.querySelector('#pantalla').getBoundingClientRect(),
+    offsetT   = elemRect.top - bodyRect.top,
+    offsetL   = elemRect.left - bodyRect.left;
+
+    // alert('Element is ' + offset + ' vertical pixels from <body>');
+
     //creating ESCENA
+
+
     const pantalla = document.querySelector('#pantalla');
     let elementoSeleccionadoListado = null;
     var ESCENA = new THREE.Scene();
-    ESCENA.name = 'ESCENA';
-    ESCENA.background = new THREE.Color(0x2a3b4c);
+    var RENDERIZADO = new THREE.WebGLRenderer();
+    var CAMARA;
 
-    //add CAMARA
-    var CAMARA = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight
-    );
-    CAMARA.name = 'CAMARA';
-    CAMARA.position.z = 20;
 
-    //renderer
-    var renderer = new THREE.WebGLRenderer();
-    // renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setSize(pantalla.clientWidth , 600);
+    const ELEMENTOS = [];
+    let transformControl;
+    const pointer = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
 
-    pantalla.appendChild(renderer.domElement);
+    init();
 
-    //add geometry
+    function init() {
+      ESCENA.name = 'ESCENA';
+      ESCENA.background = new THREE.Color(0x2a3b4c);
+
+      //add CAMARA
+      CAMARA = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight
+      );
+      CAMARA.name = 'CAMARA';
+      CAMARA.position.z = 20;
+
+      //RENDERIZADO
+      RENDERIZADO.setSize(pantalla.clientWidth , 600);
+
+      pantalla.appendChild(RENDERIZADO.domElement);
+
+      //add geometry
+
+
+
+      const GRID = new THREE.GridHelper(30, 30);
+      GRID.name = 'GRID';
+      ESCENA.add(GRID);
+
+      var controls = new OrbitControls(CAMARA, RENDERIZADO.domElement);
+
+      // controls.minDistance = 3;
+      // controls.maxDistance = 10;
+
+      //controls.enableZoom = false;
+
+      //controls.enableRotate = false;
+
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.5;
+
+      controls.maxPolarAngle = Math.PI;
+
+      controls.screenSpacePanning = true;
+
+      transformControl = new TransformControls( CAMARA, RENDERIZADO.domElement );
+      // transformControl.addEventListener( 'change', render );
+      transformControl.addEventListener( 'dragging-changed', function ( event ) {
+        controls.enabled = ! event.value;
+      } );
+      transformControl.addEventListener( 'objectChange', function () {
+
+      } );
+      document.addEventListener( 'pointerdown', onPointerDown );
+      // document.addEventListener( 'pointermove', onPointerMove );
+      ESCENA.add( transformControl );
+
+    }
+    function onPointerDown( event ) {
+
+      const {top, left, width, height} = RENDERIZADO.domElement.getBoundingClientRect();
+
+      pointer.x = -1 + 2 * (event.clientX - left) / width;
+      pointer.y = 1 - 2 * (event.clientY - top) / height;
+
+      // pointer.x = ( event.clientX / pantalla.clientWidth ) * 2 - 1 ;
+      // pointer.y = - ( event.clientY / 600 ) * 2 + 1;
+
+      raycaster.setFromCamera( pointer, CAMARA );
+
+      const intersects = raycaster.intersectObjects( ELEMENTOS, false );
+
+      if ( intersects.length > 0 ) {
+
+        const object = intersects[ 0 ].object;
+
+        if ( object !== transformControl.object ) {
+
+          transformControl.attach( object );
+
+        }
+
+      }
+
+    }
     var geometry = new THREE.BoxGeometry();
     var material = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
       wireframe: true,
     });
-    var cube = new THREE.Mesh(geometry, material);
-    cube.name = 'CUBO';
-
-    ESCENA.add(cube);
+    var CUBO = new THREE.Mesh(geometry, material);
+    CUBO.name = 'CUBO';
+    ELEMENTOS.push(CUBO);
+    ESCENA.add(CUBO);
 
     let CERO = new THREE.Mesh(
       new THREE.BoxGeometry(1,1,1),
       material
     );
     CERO.name = 'CERO';
+    ELEMENTOS.push(CERO);
     ESCENA.add(CERO);
 
     let XXX = new THREE.Mesh(
@@ -139,6 +232,7 @@
     );
     XXX.position.x = 10;
     XXX.name = 'XXX';
+    ELEMENTOS.push(XXX);
     ESCENA.add(XXX);
 
     let YYY = new THREE.Mesh(
@@ -147,6 +241,7 @@
     );
     YYY.position.y = 10;
     YYY.name = 'YYY';
+    ELEMENTOS.push(YYY);
     ESCENA.add(YYY);
 
     let ZZZ = new THREE.Mesh(
@@ -155,28 +250,8 @@
     );
     ZZZ.position.z = 10;
     ZZZ.name = 'ZZZ';
+    ELEMENTOS.push(ZZZ);
     ESCENA.add(ZZZ);
-
-
-    const GRID = new THREE.GridHelper(30, 30);
-    GRID.name = 'GRID';
-    ESCENA.add(GRID);
-
-    var controls = new OrbitControls(CAMARA, renderer.domElement);
-
-    // controls.minDistance = 3;
-    // controls.maxDistance = 10;
-
-    //controls.enableZoom = false;
-
-    //controls.enableRotate = false;
-
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.5;
-
-    controls.maxPolarAngle = Math.PI;
-
-    controls.screenSpacePanning = true;
 
     //animation
     let tiempo = 0;
@@ -190,8 +265,8 @@
       CERO.rotation.x += 0.01;
       CERO.rotation.y += 0.01;
 
-      cube.position.x = centroX + Math.cos(Math.PI*tiempo) * radio;
-      cube.position.y = centroY + Math.sin(Math.PI*tiempo) * radio;
+      CUBO.position.x = centroX + Math.cos(Math.PI*tiempo) * radio;
+      CUBO.position.y = centroY + Math.sin(Math.PI*tiempo) * radio;
       tiempo += 0.01;
       if(elementoSeleccionadoListado != null){
         $('#elementoEjeX').val(elementoSeleccionadoListado.position.x);
@@ -203,20 +278,27 @@
         $('#elementoRotZ').val(elementoSeleccionadoListado.rotation.z);
       }
 
-      renderer.render(ESCENA, CAMARA);
+      RENDERIZADO.render(ESCENA, CAMARA);
     };
     animate();
+
+    window.addEventListener('resize', function() {
+      CAMARA.aspect = pantalla.clientWidth / 600;
+      CAMARA.updateProjectionMatrix();
+      RENDERIZADO.setSize(pantalla.clientWidth, 600);
+    });
 
     dibujarElementosListado();
     function dibujarElementosListado(){
       let listaElementosPantalla = ``;
-      ESCENA.traverse(function(objeto){
+      $.each(ELEMENTOS, function (indObj, objeto) {
+      // ESCENA.traverse(function(objeto){
         let etiquetaElemento = objeto.name;
         listaElementosPantalla += `
         <li class="nav-item text-nowrap">
             <i class="far fa-circle text-danger cursor-pointer" title="Desplegar opciones" data-toggle="dropdown"></i>
             <span nombreElemento="${etiquetaElemento}" class="elementoListadoPantalla cursor-pointer" title="Abrir tabla">${etiquetaElemento}</span>
-            <div class="dropdown-menu d-none" role="menu">
+            <div class="dropdown-menu" role="menu">
               <span class="dropdown-item py-0 my-0">${etiquetaElemento}</span>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item py-0 my-0 insertTabla" href="#">Insertar</a>
@@ -237,9 +319,18 @@
     $(document).on('click', '.elementoListadoPantalla', function(e){
       const nombreElementoT = $(this).attr('nombreElemento');
       elementoSeleccionadoListado = ESCENA.getObjectByName(nombreElementoT);
+      
+      aplicarAyudanteTransform(elementoSeleccionadoListado);
+
       console.log(elementoSeleccionadoListado);
       $('#tituloPropiedadesElemento').text('Propiedades: ' + nombreElementoT);
     });
+
+    function aplicarAyudanteTransform(objetoTemp){
+      if ( objetoTemp !== transformControl.object ) {
+        transformControl.attach( objetoTemp );
+      }
+    }
 
   </script>
 </html>
