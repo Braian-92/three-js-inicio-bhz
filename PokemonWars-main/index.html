@@ -72,9 +72,9 @@
          imagens = {
             fundo_iniciar: 'fundo.png',
             gameover: 'gameover.png',
-            espaco:   'fundo-espaco.png', 
-            estrelas: 'fundo-estrelas.png', 
-            nuvens:   'fundo-nuvens.png', 
+            // espaco:   'fundo-espaco.png', 
+            // estrelas: 'fundo-estrelas.png', 
+            // nuvens:   'fundo-nuvens.png', 
             nave:     'nave-spritesheet.png', 
             latios:   'latios_spritesheet.png',
             deoxys:   'deoxys_spritesheet.png',
@@ -99,7 +99,7 @@
          context.save();
          
          // Fundo 
-         context.drawImage(imagens.fundo_iniciar, 0, 0, canvas.width, canvas.height);
+         // context.drawImage(imagens.fundo_iniciar, 0, 0, canvas.width, canvas.height);
          
          // Barra de loading
          carregadas++;
@@ -121,17 +121,17 @@
          animacao = new Animacao(context);
          teclado = new Teclado(document);
          colisor = new Colisor();
-         espaco = new Fundo(context, imagens.espaco);
-         estrelas = new Fundo(context, imagens.estrelas);
-         nuvens = new Fundo(context, imagens.nuvens);
+         // espaco = new Fundo(context, imagens.espaco);
+         // estrelas = new Fundo(context, imagens.estrelas);
+         // nuvens = new Fundo(context, imagens.nuvens);
          nave = new Nave(context, teclado, imagens.nave, 
                          imagens.explosao, imagens.tiro); 
          painel = new Painel(context, nave);
          
          // Ligações entre objetos
-         animacao.novoSprite(espaco);
-         animacao.novoSprite(nuvens);
-         animacao.novoSprite(estrelas);
+         // animacao.novoSprite(espaco);
+         // animacao.novoSprite(nuvens);
+         // animacao.novoSprite(estrelas);
          animacao.novoSprite(painel);
          animacao.novoSprite(nave);
          
@@ -143,9 +143,9 @@
       
       function configuracoesIniciais() {
          // Fundos
-         espaco.velocidade = 60;
-         estrelas.velocidade = 150;
-         nuvens.velocidade = 500;
+         // espaco.velocidade = 60;
+         // estrelas.velocidade = 150;
+         // nuvens.velocidade = 500;
          
          // Nave
          nave.posicionar();
@@ -174,65 +174,65 @@
       }
       
       function criacaoInimigos() {
-         criadorLatios = {
-            ultimoOvni: new Date().getTime(),
+         // criadorLatios = {
+         //    ultimoOvni: new Date().getTime(),
             
-            processar: function() {
-               var agora = new Date().getTime();
-               var ovni_decorrido = agora - this.ultimoOvni;
+         //    processar: function() {
+         //       var agora = new Date().getTime();
+         //       var ovni_decorrido = agora - this.ultimoOvni;
                
-               if (decorrido > 1000) {
-                  novoOvni();
-                  this.ultimoOvni = agora;
-               }
-            }
-         };
+         //       if (decorrido > 1000) {
+         //          novoOvni();
+         //          this.ultimoOvni = agora;
+         //       }
+         //    }
+         // };
 
-         criadorDeoxys = {
-            ultimoDeoxys: new Date().getTime(),
+         // criadorDeoxys = {
+         //    ultimoDeoxys: new Date().getTime(),
             
-            processar: function() {
-               var agora = new Date().getTime();
-               var deoxys_decorrido = agora - this.ultimoDeoxys;
+         //    processar: function() {
+         //       var agora = new Date().getTime();
+         //       var deoxys_decorrido = agora - this.ultimoDeoxys;
 
-               if (deoxys_decorrido > 5000) {
-                  novoDeoxys();
-                  this.ultimoDeoxys = agora;
-               }
-            }
-         };
+         //       if (deoxys_decorrido > 5000) {
+         //          novoDeoxys();
+         //          this.ultimoDeoxys = agora;
+         //       }
+         //    }
+         // };
 
-         criadorLatios = {
-            ultimoOvni: new Date().getTime(),
+         // criadorLatios = {
+         //    ultimoOvni: new Date().getTime(),
             
-            processar: function() {
-               var agora = new Date().getTime();
-               var ovni_decorrido = agora - this.ultimoOvni;
+         //    processar: function() {
+         //       var agora = new Date().getTime();
+         //       var ovni_decorrido = agora - this.ultimoOvni;
                
-               if (ovni_decorrido > 1000) {
-                  novoOvni();
-                  this.ultimoOvni = agora;
-               }
-            },
-         };
+         //       if (ovni_decorrido > 1000) {
+         //          novoOvni();
+         //          this.ultimoOvni = agora;
+         //       }
+         //    },
+         // };
 
-         criadorDeoxys = {
-            ultimoDeoxys: new Date().getTime(),
+         // criadorDeoxys = {
+         //    ultimoDeoxys: new Date().getTime(),
 
-            processar: function() {
-               var agora = new Date().getTime();
-               var deoxys_decorrido = agora - this.ultimoDeoxys;
+         //    processar: function() {
+         //       var agora = new Date().getTime();
+         //       var deoxys_decorrido = agora - this.ultimoDeoxys;
 
-               if (deoxys_decorrido > 5000) {
-                  novoDeoxys();
-                  this.ultimoDeoxys = agora;
-               }
-            }
+         //       if (deoxys_decorrido > 5000) {
+         //          novoDeoxys();
+         //          this.ultimoDeoxys = agora;
+         //       }
+         //    }
             
-         };
+         // };
          
-         animacao.novoProcessamento(criadorLatios);
-         animacao.novoProcessamento(criadorDeoxys);
+         // animacao.novoProcessamento(criadorLatios);
+         // animacao.novoProcessamento(criadorDeoxys);
       }
       
       function novoOvni() {
@@ -287,8 +287,8 @@
             context.restore();
          }
          else {
-            criadorLatios.ultimoOvni = new Date().getTime();
-            criadorDeoxys.ultimoDeoxys = new Date().getTime();
+            // criadorLatios.ultimoOvni = new Date().getTime();
+            // criadorDeoxys.ultimoDeoxys = new Date().getTime();
             animacao.ligar();
             ativarTiro(true);
          }
@@ -318,8 +318,8 @@
       }
       // iniciarJogo();
       function iniciarJogo() {
-         criadorLatios.ultimoOvni = new Date().getTime();
-         criadorDeoxys.ultimoDeoxys = new Date().getTime();
+         // criadorLatios.ultimoOvni = new Date().getTime();
+         // criadorDeoxys.ultimoDeoxys = new Date().getTime();
       
          // Tiro
          ativarTiro(true);
