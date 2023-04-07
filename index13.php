@@ -14,8 +14,8 @@
   </head>
   <body class="dark-mode text-sm">
     <div class="container-fluid">
-      <div class="row mt-2">
-        <div class="col-8">
+      <div class="row mt-0">
+        <div class="col-8 p-1">
           <div class="card card-outline card-success">
             <div class="card-header p-2">
               <h3 class="card-title">Pantalla</h3>
@@ -24,19 +24,36 @@
             </div>
           </div>
         </div>
-        <div class="col-2">
-          <div class="card card-outline card-success">
-            <div class="card-header p-2">
-              <h3 class="card-title">Elementos</h3>
-            </div>
-            <div class="card-body table-responsive p-0" style="height: 600px;">
-              <ul id="listaElementosPantalla" class="nav nav-pills flex-column px-2">
-                
-              </ul>
+        <div class="col-2 p-1">
+          <div class="row">
+            <div class="col-12 p-0 px-1">
+              <div class="card card-outline card-success">
+                <div class="card-header p-2">
+                  <h3 class="card-title">Elementos</h3>
+                </div>
+                <div class="card-body table-responsive p-0" style="height: 282px;">
+                  <ul id="listaElementosPantalla" class="nav nav-pills flex-column px-2">
+                    
+                  </ul>
+                </div>
+                <div class="card-header p-2 card-outline card-success">
+                  <h3 class="card-title">Primitivas</h3>
+                </div>
+                <div class="card-body table-responsive p-0" style="height: 280px;">
+                  <ul id="listaPrimitivas" class="nav nav-pills flex-column px-2">
+                    <li class="nav-item text-nowrap">
+                      <i class="far fa-circle text-danger cursor-pointer" title="Desplegar opciones"></i>
+                      <span class="cursor-pointer" id="crearCubo">
+                        Cubo
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-2">
+        <div class="col-2 p-1">
           <div class="card card-outline card-success">
             <div class="card-header p-2">
               <h3 id="tituloPropiedadesElemento" class="card-title">Propiedades</h3>
@@ -124,6 +141,8 @@
     let transformControl;
     const pointer = new THREE.Vector2();
     const raycaster = new THREE.Raycaster();
+    const onUpPosition = new THREE.Vector2();
+    const onDownPosition = new THREE.Vector2();
 
     init();
 
@@ -173,15 +192,15 @@
       transformControl.addEventListener( 'dragging-changed', function ( event ) {
         controls.enabled = ! event.value;
       } );
-      transformControl.addEventListener( 'objectChange', function () {
 
-      } );
       document.addEventListener( 'pointerdown', onPointerDown );
-      // document.addEventListener( 'pointermove', onPointerMove );
+      document.addEventListener( 'pointerup', onPointerUp );
       ESCENA.add( transformControl );
 
     }
     function onPointerDown( event ) {
+      onDownPosition.x = event.clientX;
+      onDownPosition.y = event.clientY;
 
       const {top, left, width, height} = RENDERIZADO.domElement.getBoundingClientRect();
 
@@ -200,7 +219,7 @@
         const object = intersects[ 0 ].object;
 
         if ( object !== transformControl.object ) {
-
+          elementoSeleccionadoListado = object;
           transformControl.attach( object );
 
         }
@@ -208,6 +227,15 @@
       }
 
     }
+    function onPointerUp( event ) {
+
+      onUpPosition.x = event.clientX;
+      onUpPosition.y = event.clientY;
+
+      // if ( onDownPosition.distanceTo( onUpPosition ) === 0 ) transformControl.detach();
+
+    }
+
     var geometry = new THREE.BoxGeometry();
     var material = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
@@ -330,6 +358,24 @@
       if ( objetoTemp !== transformControl.object ) {
         transformControl.attach( objetoTemp );
       }
+    }
+
+    $(document).on('click', '#crearCubo', function(e){
+      crearCubo(0, 0, 0);
+      dibujarElementosListado();
+    });
+
+    function crearCubo(_x, _y, _z){
+      var CUBO = new THREE.Mesh(
+        new THREE.BoxGeometry(),
+        material
+      );
+      CUBO.position.x = _x; 
+      CUBO.position.y = _y; 
+      CUBO.position.z = _z; 
+      ELEMENTOS.push(CUBO);
+      CUBO.name = 'CUBO_'+ELEMENTOS.length;
+      ESCENA.add(CUBO);
     }
 
   </script>
