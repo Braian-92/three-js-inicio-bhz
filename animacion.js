@@ -13,7 +13,7 @@ Animacion.prototype = {
    nuevoElemento: function(sprite) {
       sprite.escena.add(sprite.nave);
       this.sprite = sprite;
-      // sprite.animacao = this;
+      sprite.animacion = this;
    },
    conectar: function() {
       this.ultimoCiclo = 0;
@@ -25,8 +25,8 @@ Animacion.prototype = {
    },
    proximoFrame: function() {
       // Posso continuar?
-      console.log('proximoFrame');
-      console.log(this);
+      // console.log('proximoFrame');
+      // console.log(this);
       if ( ! this.conectado ) return;
       
       var agora = new Date().getTime();
@@ -53,14 +53,14 @@ Animacion.prototype = {
       this.ultimoCiclo = agora;
 
       // Chamamos o próximo ciclo
-      var animacao = this;
+      var animacion = this;
       requestAnimationFrame(function() {
-         animacao.proximoFrame();
+         animacion.proximoFrame();
       });
    },
    nuevoProcesamiento: function(processamento) {
       this.procesando.push(processamento);
-      processamento.animacao = this;
+      processamento.animacion = this;
    },
    excluirSprite: function(sprite) {
       this.spritesExcluir.push(sprite);

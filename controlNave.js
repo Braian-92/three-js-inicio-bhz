@@ -19,24 +19,27 @@ function Nave(pantallaT, escenaT, tecladoT, naveT, explosionT, disparoT) {
 Nave.prototype = {
    actualizar: function() {
       console.log('actualizar');
-      var incremento = this.velocidad * this.animacao.transcurrido / 1000;
+      var incremento = this.velocidad * this.animacion.transcurrido / 1000;
       
       if (this.teclado.presionada(FLECHA_IZQUIERDA) && this.x > 0){
          this.x -= incremento;
       }
          
-      if (this.teclado.presionada(FLECHA_DERECHA) && this.x < this.context.canvas.width - 36){
+      if (this.teclado.presionada(FLECHA_DERECHA) && this.x < this.pantalla.width){
          this.x += incremento;
       }
          
-      if (this.teclado.presionada(FLECHA_ARRIBA) && this.y > 0){
+      if (this.teclado.presionada(FLECHA_ABAJO) && this.y > 0){
          this.y -= incremento;
       }
          
-      if (this.teclado.presionada(FLECHA_ABAJO) &&
-               this.y < this.context.canvas.height - 48){
+      if (this.teclado.presionada(FLECHA_ARRIBA) && this.y < this.pantalla.height){
          this.y += incremento;
       }
+
+      this.nave.position.x = this.x;
+      this.nave.position.y = this.y;
+      this.nave.position.z = this.z;
    },
    desenhar: function() {
       if (this.teclado.presionada(FLECHA_IZQUIERDA)){
@@ -53,7 +56,7 @@ Nave.prototype = {
    },
    disparar: function() {
       var t = new Disparo(this.escena, this, this.disparo);
-      this.animacao.novoSprite(t);
+      this.animacion.novoSprite(t);
       this.colisor.novoSprite(t);
    },
    retangulosColisao: function() {
@@ -71,8 +74,8 @@ Nave.prototype = {
    colidiuCom: function(outro) {
       // Se colidiu com um Ovni...
       if (outro instanceof Ovni || outro instanceof Deoxys) {
-         this.animacao.excluirSprite(this);
-         this.animacao.excluirSprite(outro);
+         this.animacion.excluirSprite(this);
+         this.animacion.excluirSprite(outro);
          this.colisor.excluirSprite(this);
          this.colisor.excluirSprite(outro);
          
@@ -81,8 +84,8 @@ Nave.prototype = {
          var exp2 = new Explosao(this.context, this.imgExplosao,
                                  outro.x, outro.y, 'snd/explosao.mp3');
          
-         this.animacao.novoSprite(exp1);
-         this.animacao.novoSprite(exp2);
+         this.animacion.novoSprite(exp1);
+         this.animacion.novoSprite(exp2);
          
          var nave = this;
          exp1.fimDaExplosao = function() {
@@ -95,7 +98,7 @@ Nave.prototype = {
             }else{
                // Recolocar a nave no engine
                nave.colisor.novoSprite(nave);
-               nave.animacao.novoSprite(nave);
+               nave.animacion.novoSprite(nave);
                
                nave.posicionar();
             }

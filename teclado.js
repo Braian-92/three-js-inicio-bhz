@@ -41,11 +41,11 @@ function Teclado(elemento) {
 }
 Teclado.prototype = {
    presionada: function(tecla) {
-      console.log('presionada');
+      // console.log('presionada');
       return this.presionadas[tecla];
    },
    disparar: function(tecla, callback) {
-      console.log('disparar');
+      // console.log('disparar');
       this.funcoesDisparo[tecla] = callback;
    }
 }

@@ -160,8 +160,8 @@
     let PERSONAJE;
     let ANIMACION;
     let PANTALLA = {
-      width  : 1000,
-      height : 600
+      width  : 16,
+      height : 9
     };
 
     init();
@@ -238,7 +238,7 @@
 
       PERSONAJE = new Nave(PANTALLA, ESCENA, TECLADO, NAVE, EXPLOSION, DISPARO); 
       PERSONAJE.posicionar();
-      PERSONAJE.velocidad = 200;
+      PERSONAJE.velocidad = 10;
 
       ANIMACION.nuevoElemento(PERSONAJE);
       ANIMACION.conectar();
