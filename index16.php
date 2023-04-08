@@ -24,46 +24,14 @@
         <div class="row h-100">
           <div class="col-12 h-100">
             <div class="card card-row card-default w-100 h-100">
-              <div class="card-header bg-olive d-none">
-                <h3 class="card-title">
-                  Nueva
-                </h3>
-                <div class="card-tools d-none">
-                  <div class="btn-group">
-                    <a href="#" class="btn btn-tool dropdown-toggle" data-toggle="dropdown" data-offset="-52">
-                      <i class="fas fa-pen text-white"></i>
-                    </a>
-                    
-                    <div class="dropdown-menu" role="menu">
-                      <a href="#" class="dropdown-item">Editar</a>
-                      <a href="#" class="dropdown-item">Eliminar</a>
-                      <a href="#" class="dropdown-item">Asignados</a>
-                      <div class="dropdown-divider bg-gray-50"></div>
-                      <a href="#" class="dropdown-item">Invitar</a>
-                    </div>
-                  </div>
-                  <a id="nuevaTarea" href="#" class="btn btn-tool">
-                    <i class="fas fa-plus text-white"></i>
-                  </a>
-                </div>
-                <div class="card-tools d-none">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52">
-                      <i class="fas fa-bars"></i>
-                    </button>
-                    <div class="dropdown-menu" role="menu">
-                      <a href="#" class="dropdown-item">Add new event</a>
-                      <a href="#" class="dropdown-item">Clear events</a>
-                      <div class="dropdown-divider"></div>
-                      <a href="#" class="dropdown-item">View calendar</a>
-                    </div>
-                    <button id="nuevaTarea" type="button" class="btn btn-info btn-sm" title="Agregar Tarea">
-                      <i class="fa fa-plus"></i>
-                    </button>
-                  </div>
-                </div>
+              <div id="pantalla" class="card-body p-0 m-0 h-100 overflow-hidden">
+                
               </div>
-              <div id="pantalla" class="card-body p-0 m-0 h-100">
+            </div>            
+          </div>
+          <div class="col-4 h-100 d-none">
+            <div class="card card-row card-default w-100 h-100">
+              <div id="" class="card-body p-0 m-0 h-100 overflow-hidden">
                 
               </div>
             </div>            
@@ -88,6 +56,7 @@
   import * as THREE from 'three';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   import { TransformControls } from 'three/addons/controls/TransformControls.js';
+  import * as CANNON from 'three/addons/physics/cannon-es.js';
 
   const pantalla = document.querySelector('#pantalla');
   let elementoSeleccionadoListado = null;
@@ -101,7 +70,7 @@
     ESCENA.background = new THREE.Color(0x2a3b4c);
     CAMARA = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight
+      pantalla.clientWidth / pantalla.clientHeight
     );
     CAMARA.name = 'CAMARA';
     CAMARA.position.z = 20;
@@ -121,7 +90,102 @@
 
   }
 
+  const boxGeo = new THREE.BoxGeometry(2, 2, 2);
+  const boxMat = new THREE.MeshBasicMaterial({
+    color: 0x00ff00,
+    wireframe: true
+  });
+  const boxMesh = new THREE.Mesh(boxGeo, boxMat);
+  ESCENA.add(boxMesh);
+
+  const sphereGeo = new THREE.SphereGeometry(2);
+  const sphereMat = new THREE.MeshBasicMaterial({ 
+    color: 0xff0000, 
+    wireframe: true,
+   });
+  const sphereMesh = new THREE.Mesh( sphereGeo, sphereMat);
+  ESCENA.add(sphereMesh);
+
+  const groundGeo = new THREE.PlaneGeometry(30, 30);
+  const groundMat = new THREE.MeshBasicMaterial({ 
+    color: 0xffffff,
+    side: THREE.DoubleSide,
+    wireframe: true 
+   });
+  const groundMesh = new THREE.Mesh(groundGeo, groundMat);
+  ESCENA.add(groundMesh);
+
+  const world = new CANNON.World({
+      gravity: new CANNON.Vec3(0, -9.81, 0)
+  });
+
+  const groundPhysMat = new CANNON.Material();
+
+  const groundBody = new CANNON.Body({
+      //shape: new CANNON.Plane(),
+      //mass: 10
+      shape: new CANNON.Box(new CANNON.Vec3(15, 15, 0.1)),
+      type: CANNON.Body.STATIC,
+      material: groundPhysMat
+  });
+  world.addBody(groundBody);
+  groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+
+  const boxPhysMat = new CANNON.Material();
+
+  const boxBody = new CANNON.Body({
+      mass: 1,
+      shape: new CANNON.Box(new CANNON.Vec3(1, 1, 1)),
+      position: new CANNON.Vec3(1, 20, 0),
+      material: boxPhysMat
+  });
+  world.addBody(boxBody);
+
+  boxBody.angularVelocity.set(0, 10, 0);
+  boxBody.angularDamping = 0.5;
+
+  const groundBoxContactMat = new CANNON.ContactMaterial(
+      groundPhysMat,
+      boxPhysMat,
+      {friction: 0.04}
+  );
+
+  world.addContactMaterial(groundBoxContactMat);
+
+  const spherePhysMat = new CANNON.Material();
+
+  const sphereBody = new CANNON.Body({
+      mass: 4,
+      shape: new CANNON.Sphere(2),
+      position: new CANNON.Vec3(0, 10, 0),
+      material: spherePhysMat
+  });
+  world.addBody(sphereBody);
+
+  sphereBody.linearDamping = 0.21
+
+  const groundSphereContactMat = new CANNON.ContactMaterial(
+      groundPhysMat,
+      spherePhysMat,
+      {restitution: 0.9}
+  );
+
+  world.addContactMaterial(groundSphereContactMat);
+
+  const timeStep = 1 / 60;
+
   var animate = function () {
+    world.step(timeStep);
+
+    groundMesh.position.copy(groundBody.position);
+    groundMesh.quaternion.copy(groundBody.quaternion);
+
+    boxMesh.position.copy(boxBody.position);
+    boxMesh.quaternion.copy(boxBody.quaternion);
+
+    sphereMesh.position.copy(sphereBody.position);
+    sphereMesh.quaternion.copy(sphereBody.quaternion);
+    
     requestAnimationFrame(animate);
     RENDERIZADO.render(ESCENA, CAMARA);
   };
