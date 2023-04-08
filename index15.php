@@ -250,7 +250,7 @@
       ANIMACION = new Animacion(ESCENA);
 
       var NAVE = new THREE.Mesh(
-        new THREE.BoxGeometry(),
+        new THREE.BoxGeometry(2,1,.5),
         material
       );
 
@@ -267,7 +267,7 @@
 
       PERSONAJE = new Nave(PANTALLA, ESCENA, TECLADO, NAVE, EXPLOSION, DISPARO); 
       PERSONAJE.posicionar();
-      PERSONAJE.velocidad = 10;
+      PERSONAJE.velocidad = 20;
 
       ANIMACION.nuevoElemento(PERSONAJE);
       ANIMACION.conectar();
