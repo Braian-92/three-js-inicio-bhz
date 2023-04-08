@@ -3,6 +3,7 @@ function Animacion(escenaT) {
    this.sprites = [];
    this.sprite;
    this.conectado = false;
+   this.disparos = [];
    this.procesando = [];
    this.spritesExcluir = [];
    this.procesandoExcluir = [];
@@ -16,6 +17,16 @@ Animacion.prototype = {
       console.log(sprite.nave);
       this.sprite = sprite;
       sprite.animacion = this;
+   },
+   nuevoDisparo: function(sprite) {
+      // var disparo = new sprite.THREE.Mesh(
+      //   new sprite.THREE.BoxGeometry(),
+      //   material
+      // );
+      sprite.escena.add(sprite.disparo);
+      // sprite.disparo.position.set(sprite.nave.position);
+      // this.disparos.push(disparo);
+      // sprite.animacion = this;
    },
    conectar: function() {
       this.ultimoCiclo = 0;

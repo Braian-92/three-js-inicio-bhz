@@ -1,4 +1,4 @@
-function Nave(pantallaT, escenaT, tecladoT, naveT, explosionT, disparoT) {
+function Nave(pantallaT, escenaT, tecladoT, naveT, explosionT, disparoT, materialT, THREET) {
 // function Nave(context, teclado, imagem, imgExplosao, imgTiro) {
    this.pantalla = pantallaT;
    this.escena = escenaT;
@@ -15,7 +15,9 @@ function Nave(pantallaT, escenaT, tecladoT, naveT, explosionT, disparoT) {
    this.explosion = explosionT;
    this.acabaramVidas = null;
    this.vidasExtras = 5;
-   this.disparo = disparoT;
+   this.disparo  = disparoT;
+   this.material = materialT;
+   this.THREE = THREET;
 }
 Nave.prototype = {
    actualizar: function() {
@@ -56,9 +58,8 @@ Nave.prototype = {
       this.spritesheet.proximoQuadro();
    },
    disparar: function() {
-      var t = new Disparo(this.escena, this, this.disparo);
-      this.animacion.novoSprite(t);
-      this.colisor.novoSprite(t);
+      // var t = new Disparo(this);
+      this.animacion.nuevoDisparo(this);
    },
    retangulosColisao: function() {
       // Estes valores vão sendo ajustados aos poucos

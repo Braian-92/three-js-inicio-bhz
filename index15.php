@@ -215,11 +215,11 @@
       PANTALLAFONDO.position.x = PANTALLA.width / 2; 
       PANTALLAFONDO.position.y = PANTALLA.height / 2;
       PANTALLAFONDO.position.z = -1; 
-      // ELEMENTOS.push(PANTALLAFONDO);
-      // PANTALLAFONDO.name = 'PANTALLAFONDO_'+ELEMENTOS.length;
+      ELEMENTOS.push(PANTALLAFONDO);
+      PANTALLAFONDO.name = 'PANTALLAFONDO_'+ELEMENTOS.length;
       ESCENA.add(PANTALLAFONDO);
 
-      // var controls = new OrbitControls(CAMARA, RENDERIZADO.domElement);
+      var controls = new OrbitControls(CAMARA, RENDERIZADO.domElement);
 
       // controls.minDistance = 3;
       // controls.maxDistance = 10;
@@ -259,13 +259,17 @@
         new THREE.BoxGeometry(),
         material
       );
+      ELEMENTOS.push(EXPLOSION);
+      EXPLOSION.name = 'EXPLOSION_'+ELEMENTOS.length;
 
       var DISPARO = new THREE.Mesh(
         new THREE.BoxGeometry(),
         material
       );
+      ELEMENTOS.push(DISPARO);
+      DISPARO.name = 'DISPARO_'+ELEMENTOS.length;
 
-      PERSONAJE = new Nave(PANTALLA, ESCENA, TECLADO, NAVE, EXPLOSION, DISPARO); 
+      PERSONAJE = new Nave(PANTALLA, ESCENA, TECLADO, NAVE, EXPLOSION, DISPARO, THREE); 
       PERSONAJE.posicionar();
       PERSONAJE.velocidad = 20;
 
