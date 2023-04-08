@@ -150,6 +150,11 @@
       // wireframe: true,
     });
 
+    var material2 = new THREE.MeshBasicMaterial({
+      color: 0x7B0AB0,
+      // wireframe: true,
+    });
+
 
 
     const ELEMENTOS = [];
@@ -162,9 +167,10 @@
     let TECLADO;
     let PERSONAJE;
     let ANIMACION;
+    let multPant = 3.2;
     let PANTALLA = {
-      width  : 32,
-      height : 18
+      width  : (16 * multPant),
+      height : (9 * multPant)
     };
 
     init();
@@ -179,7 +185,11 @@
         window.innerWidth / window.innerHeight
       );
       CAMARA.name = 'CAMARA';
+      CAMARA.position.x = PANTALLA.width / 2; 
+      CAMARA.position.y = PANTALLA.height / 2;
       CAMARA.position.z = 20;
+      CAMARA.lookAt(PANTALLA.width / 2, PANTALLA.height / 2, 0);
+
 
       //RENDERIZADO
       RENDERIZADO.setSize(pantalla.clientWidth , 600);
@@ -194,7 +204,22 @@
       GRID.name = 'GRID';
       ESCENA.add(GRID);
 
-      var controls = new OrbitControls(CAMARA, RENDERIZADO.domElement);
+      var PANTALLAFONDO = new THREE.Mesh(
+        new THREE.BoxGeometry(
+          PANTALLA.width,
+          PANTALLA.height,
+          1
+        ),
+        material2
+      );
+      PANTALLAFONDO.position.x = PANTALLA.width / 2; 
+      PANTALLAFONDO.position.y = PANTALLA.height / 2;
+      PANTALLAFONDO.position.z = -1; 
+      // ELEMENTOS.push(PANTALLAFONDO);
+      // PANTALLAFONDO.name = 'PANTALLAFONDO_'+ELEMENTOS.length;
+      ESCENA.add(PANTALLAFONDO);
+
+      // var controls = new OrbitControls(CAMARA, RENDERIZADO.domElement);
 
       // controls.minDistance = 3;
       // controls.maxDistance = 10;
@@ -203,17 +228,17 @@
 
       //controls.enableRotate = false;
 
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.5;
+      // controls.enableDamping = true;
+      // controls.dampingFactor = 0.5;
 
-      controls.maxPolarAngle = Math.PI;
+      // controls.maxPolarAngle = Math.PI;
 
-      controls.screenSpacePanning = true;
+      // controls.screenSpacePanning = true;
 
       transformControl = new TransformControls( CAMARA, RENDERIZADO.domElement );
       // transformControl.addEventListener( 'change', render );
       transformControl.addEventListener( 'dragging-changed', function ( event ) {
-        controls.enabled = ! event.value;
+        // controls.enabled = ! event.value;
       } );
 
       document.addEventListener( 'pointerdown', onPointerDown );
@@ -228,7 +253,7 @@
         new THREE.BoxGeometry(),
         material
       );
-      
+
       // NAVE.position(PANTALLA.width / 2, PANTALLA.height / 2, 0);
       var EXPLOSION = new THREE.Mesh(
         new THREE.BoxGeometry(),
