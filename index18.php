@@ -48,7 +48,9 @@
   {
     "imports": {
       "three": "./threeJsMaster/build/three.module.js",
-      "three/addons/": "./threeJsMaster/examples/jsm/"
+      "three/addons/": "./threeJsMaster/examples/jsm/",
+      "cannon-es": "./threeJsMaster/examples/jsm/physics/cannon-es.js",
+      "cannon-es-debugger": "./threeJsMaster/examples/jsm/physics/cannon-es-debugger.js"
     }
   }
 </script>
@@ -56,7 +58,11 @@
   import * as THREE from 'three';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   import { TransformControls } from 'three/addons/controls/TransformControls.js';
-  import * as CANNON from 'three/addons/physics/cannon-es.js';
+  import * as CANNON from 'cannon-es'
+  import CannonDebugger from 'cannon-es-debugger'
+
+  // import * as CANNON from 'three/addons/physics/cannon-es.js';
+  // import  CannonDebugger from 'three/addons/physics/cannon-es-debugger.js';
 
   const pantalla = document.querySelector('#pantalla');
   let elementoSeleccionadoListado = null;
@@ -91,34 +97,39 @@
 
   }
 
-  const boxGeo = new THREE.BoxGeometry(2, 2, 2);
-  const boxMat = new THREE.MeshBasicMaterial({
-    color: 0x00ff00,
-    wireframe: true
-  });
-  const boxMesh = new THREE.Mesh(boxGeo, boxMat);
-  ESCENA.add(boxMesh);
+  // const boxGeo = new THREE.BoxGeometry(2, 2, 2);
+  // const boxMat = new THREE.MeshBasicMaterial({
+  //   color: 0x00ff00,
+  //   wireframe: true
+  // });
+  // const boxMesh = new THREE.Mesh(boxGeo, boxMat);
+  // ESCENA.add(boxMesh);
 
-  const sphereGeo = new THREE.SphereGeometry(2);
-  const sphereMat = new THREE.MeshBasicMaterial({ 
-    color: 0xff0000, 
-    wireframe: true,
-   });
-  const sphereMesh = new THREE.Mesh( sphereGeo, sphereMat);
-  ESCENA.add(sphereMesh);
+  // const sphereGeo = new THREE.SphereGeometry(2);
+  // const sphereMat = new THREE.MeshBasicMaterial({ 
+  //   color: 0xff0000, 
+  //   wireframe: true,
+  //  });
+  // const sphereMesh = new THREE.Mesh( sphereGeo, sphereMat);
+  // ESCENA.add(sphereMesh);
 
-  const groundGeo = new THREE.PlaneGeometry(30, 30);
-  const groundMat = new THREE.MeshBasicMaterial({ 
-    color: 0xffffff,
-    side: THREE.DoubleSide,
-    wireframe: true 
-   });
-  const groundMesh = new THREE.Mesh(groundGeo, groundMat);
-  ESCENA.add(groundMesh);
+  // const groundGeo = new THREE.PlaneGeometry(30, 30);
+  // const groundMat = new THREE.MeshBasicMaterial({ 
+  //   color: 0xffffff,
+  //   side: THREE.DoubleSide,
+  //   wireframe: true 
+  //  });
+  // const groundMesh = new THREE.Mesh(groundGeo, groundMat);
+  // ESCENA.add(groundMesh);
 
   const world = new CANNON.World({
       gravity: new CANNON.Vec3(0, -9.81, 0)
   });
+
+  const cannonDebugger = CannonDebugger(
+    ESCENA,
+    world
+  );
 
   const groundPhysMat = new CANNON.Material();
 
@@ -178,14 +189,16 @@
   var animate = function () {
     world.step(timeStep);
 
-    groundMesh.position.copy(groundBody.position);
-    groundMesh.quaternion.copy(groundBody.quaternion);
+    cannonDebugger.update();
 
-    boxMesh.position.copy(boxBody.position);
-    boxMesh.quaternion.copy(boxBody.quaternion);
+    // groundMesh.position.copy(groundBody.position);
+    // groundMesh.quaternion.copy(groundBody.quaternion);
 
-    sphereMesh.position.copy(sphereBody.position);
-    sphereMesh.quaternion.copy(sphereBody.quaternion);
+    // boxMesh.position.copy(boxBody.position);
+    // boxMesh.quaternion.copy(boxBody.quaternion);
+
+    // sphereMesh.position.copy(sphereBody.position);
+    // sphereMesh.quaternion.copy(sphereBody.quaternion);
 
     requestAnimationFrame(animate);
     RENDERIZADO.render(ESCENA, CAMARA);
