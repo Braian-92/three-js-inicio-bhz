@@ -61,25 +61,38 @@
   import * as CANNON from 'cannon-es'
   import CannonDebugger from 'cannon-es-debugger'
 
+  const pantalla = document.querySelector('#pantalla');
+
   var container = document.querySelector('body'),
       w = container.clientWidth,
       h = container.clientHeight,
       scene = new THREE.Scene(),
-      camera = new THREE.PerspectiveCamera(75, w/h, 0.001, 100),
+      // camera = new THREE.PerspectiveCamera(75, w/h, 0.001, 100),
+      camera = new THREE.PerspectiveCamera(
+        75,
+        pantalla.clientWidth / pantalla.clientHeight
+      ),
       renderConfig = {antialias: true, alpha: true},
       renderer = new THREE.WebGLRenderer(renderConfig);
   camera.position.set(0, 1, -10);
   camera.lookAt(0,0,0);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(w, h);
-  container.appendChild(renderer.domElement);
+  // container.appendChild(renderer.domElement);
+
+  renderer.setSize(pantalla.clientWidth , pantalla.clientHeight);
+  pantalla.appendChild(renderer.domElement);
 
   window.addEventListener('resize', function() {
-    w = container.clientWidth;
-    h = container.clientHeight;
-    camera.aspect = w/h;
+    // w = container.clientWidth;
+    // h = container.clientHeight;
+    // camera.aspect = w/h;
+    // camera.updateProjectionMatrix();
+    // renderer.setSize(w, h);
+
+    camera.aspect = pantalla.clientWidth / pantalla.clientHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
+    renderer.setSize(pantalla.clientWidth, pantalla.clientHeight);
   })
 
   var geometry = new THREE.PlaneGeometry(10, 10, 10);
@@ -125,7 +138,7 @@
   scene.add(box);
 
   // parent vehicle object
-  vehicle = new CANNON.RaycastVehicle({
+  let vehicle = new CANNON.RaycastVehicle({
     chassisBody: chassisBody,
     indexRightAxis: 0, // x
     indexUpAxis: 1, // y
@@ -210,7 +223,7 @@
     shape: new CANNON.Plane(),
     quaternion: new CANNON.Quaternion(-q._x, q._y, q._z, q._w)
   });
-  world.add(planeBody)
+  world.addBody(planeBody)
 
   /**
   * Main

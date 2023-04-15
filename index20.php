@@ -14,19 +14,6 @@
     .wrapper .content-wrapper {
       min-height: 100vh;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-    html,
-    body,
-    canvas {
-      width: 100%;
-      height: 100%;
-      background: #aaa;
-    }
   </style>
 </head>
 
