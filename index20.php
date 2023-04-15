@@ -14,6 +14,19 @@
     .wrapper .content-wrapper {
       min-height: 100vh;
     }
+
+    * {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    html,
+    body,
+    canvas {
+      width: 100%;
+      height: 100%;
+      background: #aaa;
+    }
   </style>
 </head>
 
@@ -181,6 +194,33 @@
     // helper.addVisual(wheelBody, 'wheel');
   });
 
+  function actualizarAuto(forward, turn){    
+    const maxSteerVal = 0.5;
+    const maxForce = 1000;
+    const brakeForce = 10;
+     
+    const force = maxForce * forward;
+    const steer = maxSteerVal * turn;
+     
+    if (forward!=0){
+      vehicle.setBrake(0, 0);
+      vehicle.setBrake(0, 1);
+      vehicle.setBrake(0, 2);
+      vehicle.setBrake(0, 3);
+
+      vehicle.applyEngineForce(force, 2);
+      vehicle.applyEngineForce(force, 3);
+    }else{
+      vehicle.setBrake(brakeForce, 0);
+      vehicle.setBrake(brakeForce, 1);
+      vehicle.setBrake(brakeForce, 2);
+      vehicle.setBrake(brakeForce, 3);
+    }
+    
+    vehicle.setSteeringValue(steer, 0);
+    vehicle.setSteeringValue(steer, 1);
+  }
+
   //! ##################################################
 
   const cannonDebugger = CannonDebugger(
@@ -194,8 +234,8 @@
   var animate = function () {
     world.step(timeStep);
 
+    actualizarAuto(0, 1);
     cannonDebugger.update();
-
     requestAnimationFrame(animate);
     RENDERIZADO.render(ESCENA, CAMARA);
   };

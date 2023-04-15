@@ -190,6 +190,9 @@ class Game{
 	}
 		
     updateDrive(forward=this.js.forward, turn=this.js.turn){
+	
+		console.log('forward', forward);
+		console.log('turn', turn);
 		
 		const maxSteerVal = 0.5;
         const maxForce = 1000;
