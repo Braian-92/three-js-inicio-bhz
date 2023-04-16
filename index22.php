@@ -368,7 +368,7 @@
   }
 
   window.addEventListener('keydown', navigate);
-  window.addEventListener('keyup', navigate);
+  // window.addEventListener('keyup', navigate);
 
   render();
   

@@ -89,6 +89,11 @@
 
   controls.maxPolarAngle = Math.PI;
 
+  // controls.minDistance = 3;
+  // controls.maxDistance = 10;
+  //controls.enableZoom = false;
+  //controls.enableRotate = false;
+
   controls.screenSpacePanning = true;
 
   window.addEventListener('resize', function() {
@@ -118,6 +123,9 @@
   **/
 
   var world = new CANNON.World();
+  let fixedTimeStep = 1.0/60.0;
+  let damping = 0.01;
+
   world.broadphase = new CANNON.SAPBroadphase(world);
   world.gravity.set(0, -10, 0);
   world.defaultContactMaterial.friction = 0;
@@ -237,6 +245,15 @@
   * Main
   **/
 
+  function updateBodies(world){
+    world.bodies.forEach( function(body){
+        if ( body.threemesh != undefined){
+          body.threemesh.position.copy(body.position);
+          body.threemesh.quaternion.copy(body.quaternion);
+        }
+    });
+  }
+
   function updatePhysics() {
     world.step(1/60);
     // update the chassis position
@@ -246,12 +263,14 @@
   var vec3 = new THREE.Vector3();
   function render() {
     requestAnimationFrame(render);
-    renderer.render(scene, camera);
     vec3.subVectors(camera.position, chassisBody.position);
     controls.object.position.copy(chassisBody.position).add(vec3);
     controls.target.copy(chassisBody.position);
     controls.update();
+    updateBodies(world);
     updatePhysics();
+    world.step(fixedTimeStep);
+    renderer.render(scene, camera);
   }
 
   function navigate(e) {
@@ -291,32 +310,30 @@
     }
   }
 
-  let esfera = new CANNON.Sphere(0.5);
-  let caja = new CANNON.Box(new CANNON.Vec3(0.5,0.5,0.5));
-
-  let disparos = [];
+  let shapes = {};
+  shapes.sphere = new CANNON.Sphere(0.5);
+  shapes.box = new CANNON.Box(new CANNON.Vec3(0.5,0.5,0.5));
 
   function disparo( sphere=true ){
     const material = new CANNON.Material();
     const body = new CANNON.Body({ mass: 5, material: material });
     if (sphere){
-      body.addShape(esfera);
+      body.addShape(shapes.sphere);
     }else{
-      body.addShape(caja);
+      body.addShape(shapes.box);
     }
         
     const x = Math.random()*0.3 + 1;
-    body.position.set(10, 10, 10);
     // body.position.set((sphere) ? -x : x, 5, 0);
-    // body.position.x =;
-
     // body.position.set(vehicle.position.x, vehicle.position.y, vehicle.position.z);
-    body.linearDamping = 0.01;
-    disparos.push(body);
+    body.position.set(chassisBody.position.x, chassisBody.position.y + 40, chassisBody.position.z);
+    // body.position.set(0, 0, 0);
+    body.linearDamping = damping;
     world.addBody(body);
-    addVisual(body, 'name'+Math.random());
         
+    addVisual(body, (sphere) ? 'sphere' : 'box', true, false);
         
+    // Create contact material behaviour
     const material_ground = new CANNON.ContactMaterial(groundMaterial, material, { friction: 0.0, restitution: (sphere) ? 0.9 : 0.3 });
     
     world.addContactMaterial(material_ground);
