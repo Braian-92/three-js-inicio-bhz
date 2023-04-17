@@ -21,6 +21,22 @@
 </head>
 
 <body class="dark-mode text-sm">
+  <div class="wrapper">
+    <div class="content-wrapper kanban" style="margin-left: 0!important">
+      <section class="content p-2">
+        <div class="row h-100">
+          <div class="col-12 h-100">
+            <div class="card card-row card-default w-100 h-100">
+              <div id="pantalla" class="card-body p-0 m-0 h-100 overflow-hidden">
+                  <canvas id="canvas" width="1600" height="900" style="border:1px solid #d3d3d3;">
+              </div>
+            </div>            
+          </div>
+          
+        </div>
+      </section>
+    </div>
+  </div>
 
 <Document id="root_doc">
 <Schema name="gadm41_ARG_2" id="gadm41_ARG_2">
@@ -9581,16 +9597,119 @@
 <script src="js/librerias/jquery-3.5.1.min.js"></script>
 <script src="js/librerias/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
+  let minX = 0;
+  let maxX = 0;
+  let minY = 0;
+  let maxY = 0;
+
+  let DIM1 = {};
   $( "Placemark" ).each(function( index ) {
-    // console.log( index + ": " + $( this ).text() );
     let nombre = $( this ).find(`[name='COUNTRY']`);
     if($(nombre).text() == 'Buenos Aires'){
       let nombre1 = $( this ).find(`[name='NAME_1']`);
       let nombre2 = $( this ).find(`coordinates`);
-      console.log($(nombre).text());
-      console.log($(nombre1).text());
-      console.log($(nombre2).text());
-      console.log('-------');
+      DIM1[$(nombre1).text()] = $(nombre2).text().split(" ");
     }
   });
+  console.log('DIM1', DIM1);
+
+  let DIM2 = {};
+  $.each(DIM1, function (cuidad, cordenadasTot) {
+    let cordenadasToObj = [];
+    $.each(cordenadasTot, function (indc, cordT) {
+      const cordArr = cordT.split(",");
+      cordenadasToObj.push(geoToPixel(cordArr[1], cordArr[0]));
+    });
+    $.each(cordenadasToObj, function (indc, cordT) {
+      if(cordT.x < minX || minX == 0){
+        minX = cordT.x;
+      }
+      if(cordT.x > maxX || maxX == 0){
+        maxX = cordT.x;
+      }
+
+      if(cordT.y < minY || minY == 0){
+        minY = cordT.y;
+      }
+      if(cordT.y > maxY || maxY == 0){
+        maxY = cordT.y;
+      }
+    });
+    DIM2[cuidad] = cordenadasToObj;
+  });
+  console.log('DIM2', DIM2);
+
+  console.log('minX', minX);
+  console.log('maxX', maxX);
+  console.log('minY', minY);
+  console.log('maxY', maxY);
+
+  let DIM3 = {};
+  let escala = .5;
+  let desfaceX = 20;
+  let desfaceY = 20;
+  $.each(DIM2, function (cuidad, cordenadasTot) {
+    let cordenadasToObjMin = [];
+    $.each(cordenadasTot, function (indc, cordT) {
+      cordenadasToObjMin.push({
+        x: ((cordT.x - minX) * escala) + desfaceX,
+        y: ((cordT.y - minY) * escala) + desfaceY,
+      });
+    });
+    DIM3[cuidad] = cordenadasToObjMin;
+  });
+  console.log('DIM3', DIM3);
+
+
+
+
+  //! dibujar ########################################
+  //! dibujar ########################################
+  //! dibujar ########################################
+
+  var c = document.getElementById("canvas");
+  var ctx = c.getContext("2d");
+  $.each(DIM3, function (cuidad, cordenadasTot) {
+    ctx.beginPath();
+    $.each(cordenadasTot, function (indc, cordT) {
+      if(indc == 0){
+        ctx.moveTo(cordT.x, cordT.y);
+      }else{
+        ctx.lineTo(cordT.x, cordT.y);
+      }
+    });
+    ctx.stroke();
+  });
+
+
+
+
+  //! funciones ####################
+  //! funciones ####################
+  //! funciones ####################
+
+  function geoToPixel(lat, lon) {
+
+    var imageNorthLat = 59.545457;  // Latitude of the image's northern edge
+    var imageSouthLat = 49.431947;  // Latitude of the image's southern edge
+
+    var imageWestLong = -11.140137; // Longitude of the image's western edge
+    var imageEastLong = 2.757568;   // Longitude of the image's eastern edge
+
+    var imageLongPixels = 1250;   // Width of the image in pixels
+    var imageLatPixels = 1600;    // Height of the image in pixels
+
+    var pixelsPerLat = imageLatPixels / (imageNorthLat - imageSouthLat);
+    var pixelsPerLong = imageLongPixels / (imageEastLong - imageWestLong);
+
+    var x = (lon-imageWestLong) * pixelsPerLong;
+    var y = Math.abs(lat-imageNorthLat) * pixelsPerLat;
+
+    return {
+      'x' : x,
+      'y' : y
+    };
+
+  };
+
 </script>
