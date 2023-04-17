@@ -9645,9 +9645,9 @@
   console.log('maxY', maxY);
 
   let DIM3 = {};
-  let escala = .5;
-  let desfaceX = 100;
-  let desfaceY = 0;
+  let escala = .6;
+  let desfaceX = 250;
+  let desfaceY = 50;
   $.each(DIM2, function (cuidad, cordenadasTot) {
     let cordenadasToObjMin = [];
     $.each(cordenadasTot, function (indc, cordT) {
