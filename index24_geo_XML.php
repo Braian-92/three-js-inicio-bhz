@@ -9646,8 +9646,8 @@
 
   let DIM3 = {};
   let escala = .5;
-  let desfaceX = 20;
-  let desfaceY = 20;
+  let desfaceX = 100;
+  let desfaceY = 0;
   $.each(DIM2, function (cuidad, cordenadasTot) {
     let cordenadasToObjMin = [];
     $.each(cordenadasTot, function (indc, cordT) {
@@ -9667,10 +9667,20 @@
   //! dibujar ########################################
   //! dibujar ########################################
 
+  // const setBg = () => {
+  //   const randomColor = Math.floor(Math.random()*16777215).toString(16);
+  //   document.body.style.backgroundColor = "#" + randomColor;
+  //   color.innerHTML = "#" + randomColor;
+  // }
+
+  // genNew.addEventListener("click", setBg);
+  // setBg();
+
   var c = document.getElementById("canvas");
   var ctx = c.getContext("2d");
   $.each(DIM3, function (cuidad, cordenadasTot) {
     ctx.beginPath();
+    const randomColor = Math.floor(Math.random()*16777215).toString(16);
     $.each(cordenadasTot, function (indc, cordT) {
       if(indc == 0){
         ctx.moveTo(cordT.x, cordT.y);
@@ -9678,6 +9688,8 @@
         ctx.lineTo(cordT.x, cordT.y);
       }
     });
+    ctx.fillStyle = "#" + randomColor;
+    ctx.fill();
     ctx.stroke();
   });
 
