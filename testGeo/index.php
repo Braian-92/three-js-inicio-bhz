@@ -31,7 +31,7 @@
      <a href="http://earthobservatory.nasa.gov/.">the Nasa Earth observatory</a>. The density information
     was downloaded from <a href="http://sedac.ciesin.columbia.edu/"> the SocioEconomic Data and Application Center</a>.
 </div> -->
-
+<!-- https://es.wikipedia.org/wiki/Coordenadas_geogr%C3%A1ficas -->
 <script type="text/javascript">
 
     // couple of constants
@@ -160,14 +160,18 @@
 
     // render the scene
     function render() {
-        var timer = Date.now() * 0.0001;
-        camera.position.x = (Math.cos( timer ) *  1800);
-        camera.position.z = (Math.sin( timer ) *  1800) ;
+        // var timer = Date.now() * 0.0001; //! base
+        // var timer = Date.now() * 0.0003;
+        var timer = Math.PI / 3;
+        camera.position.y = -600; //! comentado base
+        camera.position.x = (Math.cos( timer ) *  1400);// 1800 base
+        camera.position.z = (Math.sin( timer ) *  1400);
+        console.log(timer);
         camera.lookAt( scene.position );
         light.position = camera.position;
         light.lookAt(scene.position);
         renderer.render( scene, camera );
-        requestAnimationFrame( render );
+        // requestAnimationFrame( render );
     }
 
 
