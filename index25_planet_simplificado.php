@@ -43,7 +43,7 @@
 <script>
 
 var detail = 10;
-var shapeSize = 3;
+var shapeSize = 10;
 var size = 3;
 var height = 7;
 var stars = [];
@@ -309,6 +309,8 @@ function generateColors() {
     objeto.position.y = y;
     objeto.position.z = z;
     objeto.lookAt(0,0,0);
+    const posGeo = circuloToLatLong(shapeSize, x, y, z);
+    console.log('posGeo', posGeo);
 
     scene.add(objeto);
 
@@ -413,5 +415,11 @@ function randomColors() {
   mesh.geometry.verticesNeedUpdate = true;
 }
 
+function circuloToLatLong(_RADIUS_SPHERE, _x, _y, _z){
+  return {
+    lat : 90 - (Math.acos(_y / _RADIUS_SPHERE)) * 180 / Math.PI,
+    lon : ((270 + (Math.atan2(_x , _z)) * 180 / Math.PI) % 360) -180,
+  }
+}
   
 </script>
