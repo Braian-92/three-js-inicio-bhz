@@ -42,9 +42,9 @@
 
 <script>
 
-var detail = 100;
-var shapeSize = 7;
-var size = 4;
+var detail = 10;
+var shapeSize = 3;
+var size = 3;
 var height = 7;
 var stars = [];
 var meteorParticles = [];
@@ -114,6 +114,24 @@ window.addEventListener( 'mousemove', onMouseMove, false );
 // scene.add(colorMeteorMesh);
 
 var geometry = new THREE.IcosahedronGeometry(shapeSize, size);
+
+// const verticesOfCube = [
+//     -1,-1,-1,    1,-1,-1,    1, 1,-1,    -1, 1,-1,
+//     -1,-1, 1,    1,-1, 1,    1, 1, 1,    -1, 1, 1,
+// ];
+
+// const indicesOfFaces = [
+//     2,1,0,    0,3,2,
+//     0,4,7,    7,3,0,
+//     0,1,5,    5,4,0,
+//     1,2,6,    6,5,1,
+//     2,3,7,    7,6,2,
+//     4,5,6,    6,7,4
+// ];
+
+// const geometry = new THREE.PolyhedronGeometry( verticesOfCube, indicesOfFaces, 6, 2 );
+
+// var geometry = new THREE.PolyhedronGeometry(shapeSize, size);
 var material = new THREE.MeshLambertMaterial({
   flatShading: true,
   vertexColors: THREE.VertexColors,
@@ -121,6 +139,7 @@ var material = new THREE.MeshLambertMaterial({
 });
 var mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
+console.log(mesh.geometry)
 generateColors();
 changedHeight = true;
 
@@ -277,6 +296,22 @@ function generateColors() {
     var y = (v1.y + v2.y + v3.y) / 3;
     var z = (v1.z + v2.z + v3.z) / 3;
 
+    var material = new THREE.MeshBasicMaterial({
+      color: 0x00ff00,
+      wireframe: true,
+    });
+    let objeto = new THREE.Mesh(
+      // new THREE.ConeGeometry(.2, .5, 4),
+      new THREE.BoxGeometry(.2,.2,1,1,1,1),
+      material
+    );
+    objeto.position.x = x;
+    objeto.position.y = y;
+    objeto.position.z = z;
+    objeto.lookAt(0,0,0);
+
+    scene.add(objeto);
+
     var val = scale(simplex.noise3D(x / detail, y / detail, z / detail),-1,1,0,1);
     let index = i;
     let v = val;
@@ -284,28 +319,32 @@ function generateColors() {
     let delay = scale(distance,0,shapeSize,0,500) + 950;
     
     var clr = getColor(v);
-    var remove = scale(distance,0,craterSize,0.75,0.25);
+    // var remove = scale(distance,0,craterSize,0.75,0.25);
     // if (distance < craterSize*1.5) { clr.r -= remove; clr.g -= remove; clr.b -= remove; }
-    if (false) { clr.r -= remove; clr.g -= remove; clr.b -= remove; }
+    // if (false) { clr.r -= remove; clr.g -= remove; clr.b -= remove; }
     // this.tl = new TimelineMax({delay: delay/1000});
     // this.tl.to(mesh.geometry.faces[index].color,.2,{r: clr.r, g: clr.g, b: clr.b, ease: Expo.easeOut});
     // this.tl.to(mesh.geometry.faces[index].color,.2,{r: clr.r, g: clr.g, b: clr.b, ease: Expo.easeOut});
     // mesh.geometry.faces[index].color = 0xffffff;
+    mesh.geometry.faces[index].color.r = clr.r;
+    mesh.geometry.faces[index].color.g = clr.g;
+    mesh.geometry.faces[index].color.b = clr.b;
     for (var j = 0; j < 3; j++) {
       let currentV = avs[j];
       let flatV = vs[j];
       var val = scale(simplex.noise3D(x / detail, y / detail, z / detail),-1,1,0,1);
       var mult = 0; 
-      // mult = -0.05; 
-      mult = random(-0.05, -0.2); 
+      mult = -0.05; 
+      // mult = -0.05 * (i / 10); 
+      // mult = random(-0.05, -0.2); 
       // if (val > 0.6) mult = 0.05; if (val < 0.4) mult = -0.05; if (val < 0.2) mult = -0.07; if (distance < craterSize) mult += scale(distance,0,craterSize,0.3,0.1);
       let outwardsVector = new THREE.Vector3(0, 0, 0).sub(flatV).normalize().multiply(new THREE.Vector3(mult*height, mult*height, mult*height));
       
-      this.tl = new TimelineMax({delay: delay/1000});
+      // this.tl = new TimelineMax({delay: delay/1000});
       // this.tl.to(avs[j],.1,{x: vs[j].x, y: vs[j].y, z: vs[j].z});
-      avs[j].x = vs[j].x;
-      avs[j].y = vs[j].y;
-      avs[j].z = vs[j].z;
+      // avs[j].x = vs[j].x;
+      // avs[j].y = vs[j].y;
+      // avs[j].z = vs[j].z;
       // this.tl.to(avs[j],.1,{x: (vs[j].x+outwardsVector.x), y: (vs[j].y+outwardsVector.y), z: (vs[j].z+outwardsVector.z)});
 
       avs[j].x = vs[j].x + outwardsVector.x;
