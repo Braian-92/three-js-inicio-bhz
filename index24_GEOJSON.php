@@ -154,7 +154,10 @@
   <?php 
   $json = file_get_contents('geoJsonArgentina.json');
   $json_data = json_decode($json,true);
+  // $jsonData2 = json_decode(file_get_contents('geoJsonArgentinaV1.json'), true);
+  $jsonData3 = json_decode(file_get_contents('geoJsonArgentinaV2.json'), true);
   $GEODATA = [];
+  $GEODATA3 = [];
 
   foreach ($json_data as $ind => $val) {
     foreach ($json_data['features'] as $indF => $valF) {
@@ -166,11 +169,24 @@
       $GEODATA[$pais][$provincia][$localidad] = $coordenadas;
     }
   }
+
+
+  foreach ($jsonData3 as $ind => $val) {
+    foreach ($json_data['features'] as $indF => $valF) {
+      $pais        = $valF['properties']['COUNTRY'];
+      $provincia   = $valF['properties']['NAME_1'];
+      $coordenadas = $valF['geometry']['coordinates'];
+
+      $GEODATA3[$pais][$provincia][] = $coordenadas;
+    }
+  }
   ?>
 
   const extrudeSettings = { depth: 1, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 0, bevelThickness: 0 };
   let GEODATA = <?php echo json_encode($GEODATA); ?>;
+  let GEODATA3 = <?php echo json_encode($GEODATA3); ?>;
   console.log(GEODATA);
+  console.log(GEODATA3);
   let primero = false;
   generarDimencionesGeo(GEODATA);
 
@@ -180,7 +196,6 @@
   }
 
   function addShape( shape, extrudeSettings, color) {
-    extrudeSettings.depth = generateRandomIntegerInRange(.5, 1);
     let geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
     let mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: color } ) );
@@ -194,18 +209,19 @@
   function generarDimencionesGeo(jsonData){
     $.each(jsonData, function (pais, provincias) {
       $.each(provincias, function (provincia, localidades) {
+          let colorLocalidadT = random_color( 'hex' );
         $.each(localidades, function (licalidad, subsectores) {
+          extrudeSettings.depth = generateRandomIntegerInRange(.5, 1);
           
-
           $.each(subsectores, function (indSubsectores, sectores) {
             $.each(sectores, function (sectores, sector) {
               // if(!primero){
-                console.log('pais', pais);
-                console.log('provincia', provincia);
-                console.log('licalidad', licalidad);
-                console.log('sector', sector);
-                console.log('---------------------');
-                dibujarSector(sector)
+                // console.log('pais', pais);
+                // console.log('provincia', provincia);
+                // console.log('licalidad', licalidad);
+                // console.log('sector', sector);
+                // console.log('---------------------');
+                dibujarSector(sector, colorLocalidadT)
                 primero = true;
               // }
             });
@@ -231,17 +247,17 @@
     }
   }
 
-  function dibujarSector(sector){
+  function dibujarSector(sector, colorLocalidad){
     let forma = [];
     $.each(sector, function (indS, obj) {
       forma.push( new THREE.Vector2( obj[0], obj[1] ) );
       // forma[ indS ].multiplyScalar( 0.25 ); 
     });
-    console.log('forma', forma);
+    // console.log('forma', forma);
 
     const formaSelector = new THREE.Shape( forma );
 
-    addShape( formaSelector, extrudeSettings, random_color( 'hex' ));
+    addShape( formaSelector, extrudeSettings, colorLocalidad);
   }
 
   
