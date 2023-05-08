@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8" />
+	<link rel="icon" href="resources/favicon.svg" />
+	<title>ODI Leeds Hexmap Library</title>
+	<script src="odi.hexmap.js"></script>
+	<script src="resources/highlight.pack.js"></script>
+	<link rel="StyleSheet" href="resources/highlight.css" type="text/css" />
+	<style>
+	/* http://meyerweb.com/eric/tools/css/reset/ v2.0 | 20110126 License: none (public domain) */
+	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+	  margin: 0;
+	  padding: 0;
+	  border: 0;
+	  font-size: 100%;
+	  font: inherit;
+	  vertical-align: baseline;
+	  -moz-box-sizing: border-box;
+	  -webkit-box-sizing: border-box;
+	  box-sizing: border-box; }
+	/* HTML5 display-role reset for older browsers */
+	article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+	body { line-height: 1em; }
+	ol, ul { list-style: none; }
+	blockquote, q { quotes: none; }
+	blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+	table { border-collapse: collapse; border-spacing: 0; }
+	/* apply a natural box layout model to all elements */
+	*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+	/* End of reset */
+	/* Main site styling */
+	body {
+		background-color: #000000;
+		font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+		font-size: 16px;
+		color: #efefef;
+		margin: 0px;
+		padding: 0px;
+		line-height: 1.44em;
+		text-rendering: optimizeLegibility;
+	}
+	#main { background-color: #ffffff; color: #333333; }
+	.holder { position: relative; width: 1080px; max-width: 100%; margin: auto; }
+	.padded { padding: 1em; }
+	h1 { font-size: 1.7em; margin-top: 1em; font-weight: 600; margin: 0; }
+	h2 { font-size: 1.7em; margin-top: 1.7647058823529411em; font-weight: 500; }
+	h3 { font-size: 1.4em; margin-top: 1.428571em; }
+	h1:first-child, h2:first-child, h3:first-child { margin-top: 0; }
+	footer { width: 100%; padding: 1em; padding-bottom: 3em; }
+	footer a, footer a:visited { color: inherit; }
+	code, pre { font-family: monospace; color: #555555; background-color: #efefef; padding: 0.125em 0.25em; }
+	button, .button { border: 0px; font-size: 1em; background-color: #efefef; color: black; text-decoration: none!important; display: inline-block; padding: 0.5em 1em; cursor: pointer; vertical-align: top; line-height: 1.25em; }
+	.prettyprint {
+		background: #efefef;
+		padding: 1em;
+	}
+	section.example {
+		border-top: 1px solid #999;
+		margin-top: 4em;
+		padding-top: 4em;
+	}
+	h2 + *, h3 + * { margin-top: 1em; }
+	h4 { margin-top: 1em; font-weight: bold; }
+	p { margin-top: 1em; }
+	p + div { margin-top: 2em; }
+	section.example h2 + * { margin-top: 1em; }
+	.howto { margin-top: 1em; }
+	.b1-bg, footer { background: black; color: white; }
+	.b6-bg { background: white; color: black; }
+	#intro { text-align: center; padding: 1em; max-width: 720px; margin: 0 auto 1em; }
+	figure figcaption {
+		width: 70%;
+		margin: 1em auto 0 auto;
+		font-size: 0.8em;
+		line-height: 1.2em;
+		text-align: center;
+		color: #999;
+	}
+	figure:hover figcaption { color: inherit; }
+	</style>
+
+
+	<style>
+	#hexmap3 { height: 800px; width: 100%; margin-top: 1em; position: relative; animation-duration: 0.3s; }
+	#hexmap3 .hex-cell { stroke: black; stroke-width: 0; transition: fill 0.2s ease-in, stroke 0.2s ease-in, stroke-width 0.2s ease-in; }
+	#hexmap3 .hex-cell.hover { stroke-width: 4px; }
+	@media only screen and (max-width: 700px) {
+		/* Don't bother with labels if it is too small */
+		#hexmap3 .hex-label { display: none; }
+	}
+	#hexmap3 .tooltip { position: absolute; text-align: center; background: black; color: white; padding: 0.25em 0.5em; transform: translate3d(-50%,50%,0); transition: left 0.1s linear, top 0.1s linear; border-radius: 4px; }
+	#hexmap3 .tooltip::after { content: ""; position: absolute; bottom: auto; width: 0; height: 0; border: 0.5em solid transparent; left: 50%; top: 0%; transform: translate3d(-50%,-100%,0); border-color: transparent; border-bottom-color: black; }
+	</style>
+</head>
+<body class="b6-bg">
+	<figure>
+		<div id="hexmap3"></div>
+	</figure>
+	
+	
+	<script src="resources/odi.formatexamples.js"></script>
+	<script src="https://odileeds.org/resources/odi.log.js"></script>
+	<script>
+	ODI.log.setup({'id':'odileeds','target':['odileeds.github.io']}).add('action=view');
+	</script>
+	<script>
+	ODI.ready(function(){
+		// Define a colour scale helper function
+		function ColourScale(c){
+			var s,n;
+			s = c;
+			n = s.length;
+			// Get a colour given a value, and the range minimum/maximum
+			this.getValue = function(v,min,max){
+				var c,a,b;
+				v = (v-min)/(max-min);
+				if(v<0) return 'rgb('+s[0].rgb.join(',')+')';
+				if(v>=1) return 'rgb('+s[n-1].rgb.join(',')+')';
+				for(c = 0; c < n-1; c++){
+					a = s[c];
+					b = s[c+1];
+					if(v >= a.v && v < b.v){
+						pc = Math.min(1,(v - a.v)/(b.v-a.v));
+						rgb = [Math.round(a.rgb[0] + (b.rgb[0]-a.rgb[0])*pc),Math.round(a.rgb[1] + (b.rgb[1]-a.rgb[1])*pc),Math.round(a.rgb[2] + (b.rgb[2]-a.rgb[2])*pc)];
+						return 'rgb('+rgb.join(',')+')';
+					}
+				}
+			};
+			return this;
+		}
+
+		// Define the Viridis colour scale
+		viridis = new ColourScale([{'rgb':[68,1,84],v:0},{'rgb':[72,35,116],'v':0.1},{'rgb':[64,67,135],'v':0.2},{'rgb':[52,94,141],'v':0.3},{'rgb':[41,120,142],'v':0.4},{'rgb':[32,143,140],'v':0.5},{'rgb':[34,167,132],'v':0.6},{'rgb':[66,190,113],'v':0.7},{'rgb':[121,209,81],'v':0.8},{'rgb':[186,222,39],'v':0.9},{'rgb':[253,231,36],'v':1}]);
+
+		// Create the hexagon layout
+		hex = new ODI.hexmap(document.getElementById('hexmap3'),{
+			// The HexJSON layout
+			'hexjson':'resources/constituencies.hexjson',
+			// Once we've loaded the map the ready function is called
+			'ready':function(){
+				// Load the data
+				ODI.ajax('resources/2017-9.json',{
+					'this': this, // Set the context to the hexmap
+					'dataType':'json',
+					'success':function(data){
+						// Process the data file to find the minimum and maximum
+						var min = 1e100;
+						var max = -1e100;
+						for(var r in data){
+							min = Math.min(data[r],min);
+							max = Math.max(data[r],max);
+						}
+						this.data = data;
+						// Update the hex colours
+						this.updateColours(function(r){ return viridis.getValue(data[r],min,max); });
+					},
+					'error':function(e,attr){ this.log('ERROR','Unable to load ',attr.url,attr); }
+				});
+			}
+		});
+
+		// Make a tooltip
+		hex.on('mouseover',function(e){
+			var svg,tip,bb,bbo,hex;
+			svg = e.data.hexmap.el;
+			hex = e.target;
+			// Get any existing tooltip for this hexmap
+			tip = svg.querySelector('.tooltip');
+			if(!tip){
+				// Add a new tooltip
+				tip = document.createElement('div');
+				tip.classList.add('tooltip');
+				svg.appendChild(tip);
+			}
+			// Update contents of tooltip
+			tip.innerHTML = e.data.data.n+'<br />'+e.data.hexmap.data[e.data.region].toLocaleString()+' signatures';
+			// Update position of tooltip
+			bb = hex.getBoundingClientRect();
+			bbo = svg.getBoundingClientRect();
+			tip.style.left = Math.round(bb.left + bb.width/2 - bbo.left + svg.scrollLeft)+'px';
+			tip.style.top = Math.round(bb.top + bb.height/2 - bbo.top)+'px';
+		});
+	});
+	</script>
+</body>
+</html>
