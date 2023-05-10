@@ -5,7 +5,7 @@
     <title>HexGrid</title>
   </head>
   <body>
-    <canvas id="canvas" width="800" height="500"></canvas>
+    <canvas id="canvas" width="720" height="720"></canvas>
     <script src="main.js"></script>
   </body>
 </html>
@@ -13,8 +13,9 @@
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
 
+  const div = 20; //! estimado unidades ejeX 1%perdida de Y
   const a = 2 * Math.PI / 6;
-  const r = 10;
+  const r = (canvas.width/Math.PI) / (div / 2);
 
   function init() {
     drawGrid(canvas.width, canvas.height);
