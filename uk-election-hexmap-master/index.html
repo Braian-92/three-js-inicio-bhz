@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <style>
+    .d3-tip {
+      line-height: 1;
+      padding: 6px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      border-radius: 4px;
+      font-size: 12px;
+    }</style>
+  </head>
+  <body>
+    <div class="container">
+
+      <div class="row">
+        <h2>UK General Elections Hex Map 2015/17</h2>
+      </div>
+
+      <div class="row">
+        <div class="col-12 py-2">
+          <label>Regions:</label>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="EA">EA</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="EM">EM</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="LO">LO</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="NE">NE</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="NW">NW</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="SE">SE</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="SW">SW</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="YH">YH</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="WM">WM</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="NI">NI</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="SC">SC</button>
+          <button type="button" class="btn btn-sm btn-primary region-button" data-region="WA">WA</button>
+          <label>Results:</label>
+          <button type="button" class="btn btn-sm btn-default result-button" data-resultyear="2015">2015</button>
+          <button type="button" class="btn btn-sm btn-primary result-button" data-resultyear="2017">2017</button>    
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 py-2">
+          <div id="resultsBar"></div>
+        </div>  
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div id="viz"></div>
+        </div>
+        <div class="col-lg-6">
+          <div id="info"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="infoPanelTemplate" style="display:none;">
+      <h4><span id="constituencyName"></span></h4>
+      <strong><span id="winningCandidateName"></span></strong><br>
+      <strong><span id="winningPartyName"></span></strong><br>
+      <div id="partyColourBlock"></div>
+      <strong id="voteStatisticsLabel"></strong><br>
+      <span id="electorate"></span><br>
+      <span id="turnout"></span><br>
+      <span id="votes"></span><br>
+      <span id="share"></span><br>
+      <strong id="voteBreakdownLabel"></strong>
+      <div id="voteBarChart">
+        <svg id="svgVotes">
+        </svg>
+      </div>
+    </div>
+
+    <!-- js -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="./lib/d3-tip.js"></script>
+    <script src="./lib/d3-hexjson.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="./src/app.js"></script>
+  </body>
+</html>
