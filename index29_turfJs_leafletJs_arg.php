@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ES Modules</title>
+  <link rel="stylesheet" type="text/css" href="css/librerias/adminlte.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+  <style type="text/css">
+    #mapid { height: 600px; }
+  </style>
+</head>
+<body>
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-12">
+        <div id="mapid"></div>
+      </div>
+    </div>
+  </div>
+</body>
+  <script src="js/librerias/jquery-3.5.1.min.js"></script>
+  <script src="js/librerias/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src='https://unpkg.com/@turf/turf@6.3.0/turf.min.js'></script>
+  <script type="text/javascript">
+    // center map on Paris
+    var map = L.map('mapid', {
+        center: [
+          -39.909736,
+          -66.225586
+        ],
+        zoom: 4,
+        maxZoom: 18,
+        minZoom: 1
+    });
+
+    // add tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // var url = "countries.geojson";
+    var url = "geoJsonArgentina - copia.geojson";
+
+    // get greater Paris definition
+    fetch(url)
+      .then(response => response.json())
+      .then(fc => { 
+
+        // feature ids to remove e.g. central Paris
+        // var removeIds = [868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887];
+
+        // filter features to remove central Paris
+        // var hole = fc.features.filter(f => !removeIds.includes(f.properties.ID_APUR))
+
+        // do the union over each feature
+        // var union = hole[0];
+        // for (let i=1; i<hole.length; i++) {
+        //   console.log('hole', hole[i]);
+        //   union = turf.union(union, hole[i]);
+        // }
+
+        // new Feature collection with unioned features
+        // var fc2 = {
+          // "type": "FeatureCollection",
+          // "features": [fc] // note features has to be an array
+        // }
+
+        // add to map
+        L.geoJson(fc).addTo(map);
+
+        // var lat, lng;
+
+        // map.addEventListener('mousemove', function(ev) {
+        //   lat = ev.latlng.lat;
+        //   lng = ev.latlng.lng;
+        //   console.log('getCenter', map.getCenter());
+        // });
+
+        // document.getElementById("mapid").addEventListener("click", function (event) {
+        //     console.log(lat + ' - ' + lng);
+        //     console.log('getCenter', map.getCenter());
+        //     return false;
+        // });
+
+        // var currentZoom = document.getElementById("currentZoom");
+        function showZoom() {
+          // console.log('getZoom', map.getZoom());
+        }
+        map.on("zoomend", showZoom);
+        showZoom();
+        
+        // setInterval(function () {
+        //    var currentPos = map.getCenter();
+        //    map.panTo([
+        //      currentPos.lat,
+        //     currentPos.lng + 0.1
+        //   ])
+        // }, 2000);
+
+        map.on("moveend", function () {
+           // console.log('getCenter', map.getCenter().toString());
+        });
+      
+      });
+  </script>
+</html>
