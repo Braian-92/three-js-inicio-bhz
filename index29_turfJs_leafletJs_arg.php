@@ -36,7 +36,7 @@
 
     // add tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        // attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     // var url = "countries.geojson";
@@ -69,19 +69,16 @@
         // add to map
         L.geoJson(fc).addTo(map);
 
-        // var lat, lng;
-
-        // map.addEventListener('mousemove', function(ev) {
-        //   lat = ev.latlng.lat;
-        //   lng = ev.latlng.lng;
-        //   console.log('getCenter', map.getCenter());
-        // });
-
         // document.getElementById("mapid").addEventListener("click", function (event) {
         //     console.log(lat + ' - ' + lng);
         //     console.log('getCenter', map.getCenter());
         //     return false;
         // });
+
+        map.on('click',function (event) {
+           // control.getContainer().innerHTML = "lat: " + event.latlng.lat + ", long: " + event.latlng.lng;
+          console.log('wrap', event.latlng.wrap());
+       });
 
         // var currentZoom = document.getElementById("currentZoom");
         function showZoom() {
@@ -89,7 +86,7 @@
         }
         map.on("zoomend", showZoom);
         showZoom();
-        
+
         // setInterval(function () {
         //    var currentPos = map.getCenter();
         //    map.panTo([
