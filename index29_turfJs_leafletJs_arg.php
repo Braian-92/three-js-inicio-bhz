@@ -82,7 +82,7 @@
 
         // var currentZoom = document.getElementById("currentZoom");
         function showZoom() {
-          // console.log('getZoom', map.getZoom());
+          console.log('getZoom', map.getZoom());
         }
         map.on("zoomend", showZoom);
         showZoom();
@@ -96,7 +96,7 @@
         // }, 2000);
 
         map.on("moveend", function () {
-           // console.log('getCenter', map.getCenter().toString());
+           console.log('getCenter', map.getCenter().toString());
         });
       
       });

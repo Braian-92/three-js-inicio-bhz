@@ -28,8 +28,11 @@
 
 
     var map = L.map('mapid', {
-      center: [35.205233347514536, -106.74728393554688],
-      zoom:10
+      // center: [35.205233347514536, -106.74728393554688],
+      // center: [ -36.795209, -60.246827],
+      center: [-37.13229299359739, -64.13379147648811],
+      zoom:4
+      // zoom:10
     });
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
@@ -51,30 +54,54 @@
    function style(feature) {
        return {
            fillColor: getColor(feature.properties.count),
-           weight: 2,
-           opacity: 1,
+           weight: 3,
+           // opacity: 1,
+           opacity: feature.properties.count == 0 ? 0 : 1,
            color: 'white',
            dashArray: '3',
-           fillOpacity: 0.7
+           fillOpacity: feature.properties.count == 0 ? 0 : 1
+           // fillOpacity: 1
        };
    }
 
-   var bbox = [
-    -106.754150390625,
-     35.02887183968363,
-    -106.47674560546875,
-     35.18615531474442
-    ];
+   // lat: 36.2265501474709 4, lng: -107.82312015071511 1
+   // 33.852169701407426 2, lng: -105.32922366634011 3
+
+  var bbox = [
+    -107.754150390625, // x1
+     34.02887183968363, //!y2
+    -105.47674560546875, //x2
+     36.18615531474442 // y1
+  ];
    // lat: -33.174341551002065, lng: -63.705322332680225
    // lat: -41.426253195072704, lng: -56.278564520180225
 
+  // lat: -21.453068633086772, lng: -72.1845705807209
+  // lat: -57.72292718324142, lng: -50.93261852860451
+
+  // lat: -21.53484700204879, lng: -76.4033205807209
+  // lat: -55.178867663282, lng: -51.4423830807209
+
   // bbox = [
-  //   -41.426253195072704,
-  //   -33.174341551002065, 
-  //   -56.278564520180225,
   //   -63.705322332680225,
+  //   -41.426253195072704,
+  //   -56.278564520180225,
+  //   -33.174341551002065, 
   // ];
-   var size = .01;
+
+  bbox = [
+    -72.1845705807209,
+    -57.72292718324142,
+    -50.93261852860451,
+    -21.453068633086772, 
+  ];
+
+   map.on('click',function (event) {
+      // control.getContainer().innerHTML = "lat: " + event.latlng.lat + ", long: " + event.latlng.lng;
+     console.log('wrap', event.latlng.wrap());
+  });
+
+   var size = .4;
    var hexgrid = turf.hex(bbox, size);
   for(var x=0;x<Object.keys(hexgrid.features).length;x++){
     hexgrid.features[x].properties.count=0;
@@ -88,29 +115,71 @@
      .then(response => response.json())
      .then(fc => {
        // L.geoJson(fc).addTo(map);
-        for(x=0;x<Object.keys(hexgrid.features).length;x++){
+      console.log(fc);
+        for(x=0;x<fc.features.length;x++){
+          // console.log(fc.features[x]['geometry']['coordinates']);
+          if(fc.features[x]['properties']['NAME_1'] == 'BuenosAires' || true){
+            for(y=0;y<fc.features[x]['geometry']['coordinates'].length;y++){
+              // console.log(fc.features[x]['geometry']['coordinates'][y]);
+              for(z=0;z<fc.features[x]['geometry']['coordinates'][y].length;z++){
+                // console.log(fc.features[x]['geometry']['coordinates'][y][z]);
+                for(a=0;a<fc.features[x]['geometry']['coordinates'][y][z].length;a++){
+
+                  // console.log(fc.features[x]['geometry']['coordinates'][y][z][a]);
+                  p.push(L.marker([
+                    fc.features[x]['geometry']['coordinates'][y][z][a][1],
+                    fc.features[x]['geometry']['coordinates'][y][z][a][0],
+                  ]).toGeoJSON());
+                  // var t = L.marker([
+                  //   fc.features[x]['geometry']['coordinates'][y][z][a][0],
+                  //   fc.features[x]['geometry']['coordinates'][y][z][a][1],
+                  // ]);//.addTo(map);
+                  // p.push(t.toGeoJSON(t));
+                }
+              }
+            }
+          }
+          // p.push(L.marker([-36.79081088937694, -59.85845952294767]).toGeoJSON());
           // console.log(fc.features[x].attributes.OBJECTID);
-          console.log(fc);
-          // var t = L.marker([fc.features[x].geometry.y,fc.features[x].geometry.x]);//.addTo(map);
-          // p.push(t.toGeoJSON());
+          // console.log(fc);
         }
        test();
     });
 
 
    function test(){
-    for(var y=0;y<Object.keys(hexgrid.features).length-1;y++){
+    // console.log(hexgrid.features);
+    for(var i=0;i<hexgrid.features.length;i++){
+        // console.log(hexgrid.features[i]['geometry']['coordinates'][0]);
+        for(var c=0;c<p.length-1;c++){
+          var poly=turf.polygon(hexgrid.features[i]['geometry']['coordinates']);
+          // console.log(poly);
+          // var poly=turf.polygon(hexgrid.features[y].geometry.coordinates);
+          
+          if(turf.inside(p[c],poly)){
+            hexgrid.features[i].properties.count+=1;
+            // console.log('dentro');
+          }else{
+            // console.log('fuera');
 
-      for(var c=0;c<p.length-1;c++){
-        var poly=turf.polygon(hexgrid.features[y].geometry.coordinates);
+          }
+        }//insid
+      // for(var j=0;j<hexgrid.features[i]['geometry'][0];j++){
+      //   console.log(hexgrid.features[i]['geometry'][0][j]);
+
+      // }
+    }
+
+    //   for(var c=0;c<p.length-1;c++){
+    //     var poly=turf.polygon(hexgrid.features[y].geometry.coordinates);
         
-        if(turf.inside(p[c],poly)){
-          hexgrid.features[y].properties.count+=1;
-          console.log(hexgrid.features[y].properties.count);
-        }
-      }//inside inside for
+    //     if(turf.inside(p[c],poly)){
+    //       hexgrid.features[y].properties.count+=1;
+    //       console.log(hexgrid.features[y].properties.count);
+    //     }
+    //   }//inside inside for
       
-    }//end for
+    // }//end for
     L.geoJson(hexgrid,{style: style}).addTo(map);  
    }
 
