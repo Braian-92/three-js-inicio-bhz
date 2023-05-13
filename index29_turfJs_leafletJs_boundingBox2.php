@@ -26,7 +26,7 @@
   <script type="text/javascript">
    var p=[];
 
-
+   // https://apexcharts.com/docs/options/theme/
     var map = L.map('mapid', {
       // center: [35.205233347514536, -106.74728393554688],
       // center: [ -36.795209, -60.246827],
@@ -40,10 +40,10 @@
 
 
    function getColor(d) {
-       return d > 15 ? '#800026' :
+       return d > 15  ? '#800026' :
               d > 13  ? '#BD0026' :
               d > 11  ? '#E31A1C' :
-              d > 6  ? '#FC4E2A' :
+              d > 6   ? '#FC4E2A' :
               d > 4   ? '#FD8D3C' :
               d > 2   ? '#FEB24C' :
               d > 0   ? '#FED976' :
@@ -110,6 +110,8 @@
 
    var url = "geoJsonArgentina - copia.geojson";
 
+   let formasProvincias = {};
+
    // get greater Paris definition
    fetch(url)
      .then(response => response.json())
@@ -118,11 +120,22 @@
       console.log(fc);
         for(x=0;x<fc.features.length;x++){
           // console.log(fc.features[x]['geometry']['coordinates']);
-          if(fc.features[x]['properties']['NAME_1'] == 'BuenosAires' || true){
+          const provinciaTemp = fc.features[x]['properties']['NAME_1'];
+          if(provinciaTemp == 'BuenosAires'){
             for(y=0;y<fc.features[x]['geometry']['coordinates'].length;y++){
               // console.log(fc.features[x]['geometry']['coordinates'][y]);
               for(z=0;z<fc.features[x]['geometry']['coordinates'][y].length;z++){
                 // console.log(fc.features[x]['geometry']['coordinates'][y][z]);
+                const seccionTemp = fc.features[x]['geometry']['coordinates'][y][z];
+                if(typeof formasProvincias[provinciaTemp] == 'undefined'){
+                  formasProvincias[provinciaTemp] = seccionTemp;
+                  console.log('formasProvincias', formasProvincias[provinciaTemp]);
+                  console.log('seccionTemp', seccionTemp);
+                }else{
+                  console.log('formasProvincias2', formasProvincias[provinciaTemp]);
+                  console.log('seccionTemp2', seccionTemp);
+                  formasProvincias[provinciaTemp] = turf.union(formasProvincias[provinciaTemp], seccionTemp);
+                }
                 for(a=0;a<fc.features[x]['geometry']['coordinates'][y][z].length;a++){
 
                   // console.log(fc.features[x]['geometry']['coordinates'][y][z][a]);
@@ -144,8 +157,19 @@
           // console.log(fc);
         }
        test();
+        console.log('formasProvincias', formasProvincias);
+        var bsGeo = {
+         "type": "FeatureCollection",
+         "features": [ formasProvincias['BuenosAires'] ] // note features has to be an array
+        }
+        console.log('bsGeo', bsGeo);
+
+       // add to map
+       L.geoJson(bsGeo).addTo(map);
     });
 
+    // var polygonBs = L.polygon([[formasProvincias['BuenosAires']]], {color: 'red'}).addTo(map);
+    // L.geoJson(polygonBs).addTo(map)
 
    function test(){
     // console.log(hexgrid.features);
@@ -180,7 +204,7 @@
     //   }//inside inside for
       
     // }//end for
-    L.geoJson(hexgrid,{style: style}).addTo(map);  
+    // L.geoJson(hexgrid,{style: style}).addTo(map);  
    }
 
    // var polygon = turf.polygon([[[-81, 41], [-88, 36], [-84, 31], [-80, 33], [-77, 39], [-81, 41]]]);

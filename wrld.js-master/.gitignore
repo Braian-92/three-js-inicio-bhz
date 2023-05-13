@@ -1,0 +1,10 @@
+.DS_Store
+dist/
+cdn/
+node_modules/
+npm-debug.log
+*.bk
+src/*.tmp
+tmp/
+coverage/
+TODO
