@@ -222,7 +222,7 @@ var render = function() {
   frames ++;
   renderer.render(scene, camera);
   
-  stats.end();
+  // stats.end();
   
   requestAnimationFrame(render);
 };
